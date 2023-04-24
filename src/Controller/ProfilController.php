@@ -6,13 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class VodController extends AbstractController
+class ProfilController extends AbstractController
 {
-    #[Route('/vod', name: 'app_vod')]
+    #[Route('/profil', name: 'app_profil')]
     public function index(): Response
     {
-        return $this->render('vod/index.html.twig', [
-            'controller_name' => 'VodController',
+        return $this->render('profil/index.html.twig', [
+            'controller_name' => 'ProfilController',
         ]);
     }
 }

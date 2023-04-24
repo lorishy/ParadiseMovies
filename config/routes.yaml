@@ -1,17 +1,3 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
-home:
-  path: /
-  controller: App\Controller\HomeController::index
-  methods: GET
-
-vod:
-  path: /vod
-  controller: App\Controller\VodController::index
-  methods: GET
-
-cinema:
-  path: /cinema
-  controller: App\Controller\CinemaController::index
-  methods: GET
