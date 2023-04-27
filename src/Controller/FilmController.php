@@ -20,19 +20,29 @@ class FilmController extends AbstractController
     }
 
     #[Route('/vod/films', name: 'films_index')]
-    public function show(): Response
+    public function index(): Response
     {
         $films = $this->entityManager->getRepository(Film::class)->findAll();
 
-        return $this->render('vod/films/show.html.twig', [
+        return $this->render('vod/films/index.html.twig', [
             'films' => $films,
         ]);
     }
 
-    #[Route('/vod/films/new', name: 'films_new')]
-    public function new(Request $request): Response
+    #[Route('/vod/films/{titre}', name: 'films_show')]
+    public function show(Film $film): Response
     {
-        $film = new Film();
+
+        return $this->render('vod/films/show.html.twig', [
+            'film' => $film,
+        ]);
+    }
+
+
+    #[Route('/vod/films-add', name: 'films_add', methods: ['GET', 'POST'])]
+    public function add(Request $request): Response
+    {
+        $film = new Film(); 
         $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
 
@@ -43,7 +53,27 @@ class FilmController extends AbstractController
             return $this->redirectToRoute('films_index');
         }
 
-        return $this->render('vod/films/new.html.twig', [
+        return $this->render('vod/films/add.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/vod/films/{titre}/edit', name: 'films_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Film $film): Response
+    {
+        $form = $this->createForm(FilmType::class, $film);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($film);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('films_index');
+        }
+
+        return $this->render('vod/films/edit.html.twig', [
+            'film' => $film,
             'form' => $form->createView(),
         ]);
     }

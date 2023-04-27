@@ -8,8 +8,10 @@
 {% endblock %}
 
 {% block body %}
+	{% include('vod/partials/header.html.twig') %}
+
     <div class="container">
-        <h1 class="text-center mb-4">Ajouter un film</h1>
+        <h1 class="text-center mb-4">Modifier le film {{film.titre}}</h1>
 
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -26,7 +28,7 @@
                         {{ form_label(form.duree, 'Durée', {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
                     </div>
-                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <input type="submit" value="Modifier" class="btn btn-primary">
                 {{ form_end(form) }}
             </div>
         </div>
