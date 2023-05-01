@@ -4,6 +4,15 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <style>
+        .container{
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: #f7f7f7;
+        border-radius: 10px;
+        }
+    </style>
     <link rel="stylesheet" href="{{ asset('css/film.css') }}">
 {% endblock %}
 
