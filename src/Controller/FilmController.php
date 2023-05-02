@@ -58,10 +58,13 @@ class FilmController extends AbstractController
         ]);
     }
 
-    #[Route('/vod/films/{titre}/edit', name: 'films_edit', methods: ['GET', 'POST'])]
+    #[Route('/vod/films/{titre}/edit', name: 'films_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, Film $film): Response
     {
-        $form = $this->createForm(FilmType::class, $film);
+        $form = $this->createForm(FilmType::class, $film, [
+            // 'action' => $this->generateUrl('target_route'),
+            'method' => 'PUT',
+        ]);
 
         $form->handleRequest($request);
 
@@ -76,5 +79,15 @@ class FilmController extends AbstractController
             'film' => $film,
             'form' => $form->createView(),
         ]);
+    }
+
+    
+    #[Route('/vod/films/{titre}/delete', name: 'films_delete', methods: ['GET'])]
+    public function delete(Film $film, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($film);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('films_index');
     }
 }
