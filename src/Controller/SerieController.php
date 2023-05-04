@@ -82,7 +82,7 @@ class SerieController extends AbstractController
     }
 
     
-    #[Route('/vod/series/{titre}/delete', name: 'series_delete', methods: ['GET'])]
+    #[Route('/vod/series/{titre}/delete', name: 'series_delete', methods: ['GET', 'DELETE'])]
     public function delete(Serie $serie, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($serie);

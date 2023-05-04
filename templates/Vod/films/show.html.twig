@@ -59,9 +59,9 @@
       <p class="film-description">{{ film.description }}</p>
       <a href="{{ path('films_index') }}" class="film-back-link">Retour</a>
       <a href="{{ path('films_edit', {titre : film.titre}) }}" class="film-back-link">Modifier film</a>
-      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getById('js-pin-delete-form').submit" class="btn btn-danger">Supprimer film</a>
+      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-film-delete-form').submit()" class="btn btn-danger">Supprimer film</a>
 
-      <form id="js-pin-delete-form" action="{{path('films_delete', {titre : film.titre}) }}" method="post" style="display: none;">
+      <form id="js-film-delete-form" action="{{path('films_delete', {titre : film.titre}) }}" method="post" style="display: none;">
         <input type="hidden" name="_method" value="DELETE">
         <input type="submit" value="Delete">
       </form>

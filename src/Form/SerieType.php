@@ -12,10 +12,8 @@ class SerieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
+            ->add('titre')
             ->add('description')
-            ->add('createdAt')
-            ->add('updatedAt')
         ;
     }
 

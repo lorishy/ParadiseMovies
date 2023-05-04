@@ -55,13 +55,12 @@
   <div class="container">
     <div class="serie">
       <h1 class="serie-title">{{ serie.titre }}</h1>
-      <p class="serie-duration">{{ serie.duree|date('H:i:s') }}</p>
       <p class="serie-description">{{ serie.description }}</p>
       <a href="{{ path('series_index') }}" class="serie-back-link">Retour</a>
       <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="serie-back-link">Modifier serie</a>
-      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getById('js-pin-delete-form').submit" class="btn btn-danger">Supprimer serie</a>
+      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-serie-delete-form').submit()">Supprimer serie</a>
 
-      <form id="js-pin-delete-form" action="{{path('series_delete', {titre : serie.titre}) }}" method="post" style="display: none;">
+      <form id="js-serie-delete-form" action="{{path('series_delete', {titre : serie.titre}) }}" method="post" style="display: none;">
         <input type="hidden" name="_method" value="DELETE">
         <input type="submit" value="Delete">
       </form>

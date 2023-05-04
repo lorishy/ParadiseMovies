@@ -82,7 +82,7 @@ class FilmController extends AbstractController
     }
 
     
-    #[Route('/vod/films/{titre}/delete', name: 'films_delete', methods: ['GET'])]
+    #[Route('/vod/films/{titre}/delete', name: 'films_delete', methods: ['GET', 'DELETE'])]
     public function delete(Film $film, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($film);

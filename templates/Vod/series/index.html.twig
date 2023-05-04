@@ -55,13 +55,13 @@
     {% else %}
       <ul>
         {% for serie in series %}
-          <li><a href="{{ path('series_show', {titre : serie.titre})  }}" > {{ serie.titre }} </a> ({{ serie.duree|date('H:i:s')}}) </li>
+          <li><a href="{{ path('series_show', {titre : serie.titre})  }}" > {{ serie.titre }} </a></li>
         {% endfor %}
       </ul>
     {% endif %}
     <div class="button-container">
       <a href="{{ path('app_home') }}">Retour accueil</a>
-      <a href="{{ path('series_add') }}">Ajouter nouveau serie</a>
+      <a href="{{ path('series_add') }}">Ajouter nouvelle serie</a>
     </div>
   </div>
 {% endblock %}
