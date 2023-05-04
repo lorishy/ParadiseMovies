@@ -1,0 +1,45 @@
+{# templates/serie/add.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .container{
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: #f7f7f7;
+        border-radius: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('css/serie.css') }}">
+{% endblock %}
+
+{% block body %}
+	{% include('vod/partials/header.html.twig') %}
+
+    <div class="container">
+        <h1 class="text-center mb-4">Modifier le serie {{serie.titre}}</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ form_start(form, {'method': 'PUT'}) }}
+                    <div class="form-group">
+                        {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.duree, 'Durée', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <input type="submit" value="Modifier" class="btn btn-primary">
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

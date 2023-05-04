@@ -29,6 +29,9 @@ class Episode
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $duree = null;
 
+    #[ORM\ManyToOne(inversedBy: 'episodes')]
+    private ?Serie $serie = null;
+
     use Timestampable;
 
     public function getId(): ?int
@@ -68,6 +71,18 @@ class Episode
     public function setDuree(\DateTimeInterface $duree): self
     {
         $this->duree = $duree;
+
+        return $this;
+    }
+
+    public function getSerie(): ?Serie
+    {
+        return $this->serie;
+    }
+
+    public function setSerie(?Serie $serie): self
+    {
+        $this->serie = $serie;
 
         return $this;
     }
