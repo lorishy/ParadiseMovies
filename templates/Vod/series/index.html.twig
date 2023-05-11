@@ -1,25 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Films{% endblock %}
+{% block title %}Series{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
   <style>
     /* Ajout de styles CSS pour la liste des series */
-    ul {
+    .uls {
       list-style-type: none;
       margin: 0;
       padding: 0;
     }
 
-    li {
+    .lis {
       background-color: #f7f7f7;
       padding: 10px;
       margin-bottom: 5px;
       border-radius: 5px;
     }
 
-    h1 {
+    .h1s {
       margin-top: 0;
     }
 
@@ -48,18 +48,18 @@
 	{% include('vod/partials/header.html.twig') %}
 
   <div class="container">
-    <h1>Séries disponibles</h1>
+    <h1 class="h1s">Séries disponibles</h1>
 
     {% if series is empty %}
       <p>Aucune serie disponible pour le moment.</p>
     {% else %}
-      <ul>
+      <ul class="uls">
         {% for serie in series %}
-          <li><a href="{{ path('series_show', {titre : serie.titre})  }}" > {{ serie.titre }} </a></li>
+          <li class="lis"><a href="{{ path('series_show', {titre : serie.titre})  }}" > {{ serie.titre }} </a></li>
         {% endfor %}
       </ul>
     {% endif %}
-    <div class="button-container">
+    <div class="button-container ">
       <a href="{{ path('app_home') }}">Retour accueil</a>
       <a href="{{ path('series_add') }}">Ajouter nouvelle serie</a>
     </div>

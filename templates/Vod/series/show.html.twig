@@ -41,9 +41,24 @@
       border-radius: 5px;
       text-decoration: none;
     }
+    .serie-delete-link {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      text-align: center;
+      padding: 10px;
+      background-color: red;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+    }
 
     .serie-back-link:hover {
       background-color: #0062cc;
+    }
+
+    .serie-delete-link:hover {
+      background-color: #9b0000;
     }
   </style>
 {% endblock %}
@@ -58,11 +73,11 @@
       <p class="serie-description">{{ serie.description }}</p>
       <a href="{{ path('series_index') }}" class="serie-back-link">Retour</a>
       <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="serie-back-link">Modifier serie</a>
-      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-serie-delete-form').submit()">Supprimer serie</a>
+      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-serie-delete-form').submit()" class="serie-delete-link">Supprimer serie</a>
 
       <form id="js-serie-delete-form" action="{{path('series_delete', {titre : serie.titre}) }}" method="post" style="display: none;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.titre) }}">
         <input type="hidden" name="_method" value="DELETE">
-        <input type="submit" value="Delete">
       </form>
 
     </div>

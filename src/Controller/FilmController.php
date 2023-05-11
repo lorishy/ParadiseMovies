@@ -42,8 +42,8 @@ class FilmController extends AbstractController
     #[Route('/vod/films-add', name: 'films_add', methods: ['GET', 'POST'])]
     public function add(Request $request): Response
     {
-        $film = new Film(); 
-        $form = $this->createForm(FilmType::class, $film);
+        
+        $form = $this->createForm(FilmType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -83,11 +83,13 @@ class FilmController extends AbstractController
 
     
     #[Route('/vod/films/{titre}/delete', name: 'films_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Film $film, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Film $film, EntityManagerInterface $entityManager): Response
     {
-        $entityManager->remove($film);
-        $entityManager->flush();
-
+        if ($this->isCsrfTokenValid('film_deletion' . $film->getTitre(), $request->request->get('csrf_token')))
+        {
+            $entityManager->remove($film);
+            $entityManager->flush();
+        }
         return $this->redirectToRoute('films_index');
     }
 }

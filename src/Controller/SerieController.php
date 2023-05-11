@@ -82,12 +82,15 @@ class SerieController extends AbstractController
     }
 
     
-    #[Route('/vod/series/{titre}/delete', name: 'series_delete', methods: ['GET', 'DELETE'])]
-    public function delete(Serie $serie, EntityManagerInterface $entityManager): Response
+    #[Route('/vod/series/{titre}/delete', name: 'series_delete', methods: ['DELETE'])]
+    public function delete(Request $request, Serie $serie, EntityManagerInterface $entityManager): Response
     {
-        $entityManager->remove($serie);
-        $entityManager->flush();
 
+        if ($this->isCsrfTokenValid('serie_deletion' . $serie->getTitre(), $request->request->get('csrf_token')))
+        {
+            $entityManager->remove($serie);
+            $entityManager->flush();
+        }
         return $this->redirectToRoute('series_index');
     }
 }

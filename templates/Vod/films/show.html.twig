@@ -41,9 +41,24 @@
       border-radius: 5px;
       text-decoration: none;
     }
+    .film-delete-link {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      text-align: center;
+      padding: 10px;
+      background-color: red;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+    }
 
     .film-back-link:hover {
       background-color: #0062cc;
+    }    
+    
+    .film-delete-link:hover {
+      background-color: #9b0000;
     }
   </style>
 {% endblock %}
@@ -59,11 +74,11 @@
       <p class="film-description">{{ film.description }}</p>
       <a href="{{ path('films_index') }}" class="film-back-link">Retour</a>
       <a href="{{ path('films_edit', {titre : film.titre}) }}" class="film-back-link">Modifier film</a>
-      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-film-delete-form').submit()" class="btn btn-danger">Supprimer film</a>
+      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-film-delete-form').submit()" class="film-delete-link">Supprimer film</a>
 
       <form id="js-film-delete-form" action="{{path('films_delete', {titre : film.titre}) }}" method="post" style="display: none;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token('film_deletion' ~ film.titre) }}">
         <input type="hidden" name="_method" value="DELETE">
-        <input type="submit" value="Delete">
       </form>
 
     </div>

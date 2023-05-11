@@ -6,20 +6,20 @@
   {{ parent() }}
   <style>
     /* Ajout de styles CSS pour la liste des films */
-    ul {
+    .uls {
       list-style-type: none;
       margin: 0;
       padding: 0;
     }
 
-    li {
+    .lis {
       background-color: #f7f7f7;
       padding: 10px;
       margin-bottom: 5px;
       border-radius: 5px;
     }
 
-    h1 {
+    .h1s {
       margin-top: 0;
     }
 
@@ -48,14 +48,14 @@
 	{% include('vod/partials/header.html.twig') %}
 
   <div class="container">
-    <h1>Films disponibles</h1>
+    <h1 class="h1s">Films disponibles</h1>
 
     {% if films is empty %}
       <p>Aucun film disponible pour le moment.</p>
     {% else %}
-      <ul>
+      <ul class="uls">
         {% for film in films %}
-          <li><a href="{{ path('films_show', {titre : film.titre})  }}" > {{ film.titre }} </a> ({{ film.duree|date('H:i:s')}}) </li>
+          <li class="lis"><a href="{{ path('films_show', {titre : film.titre})  }}" > {{ film.titre }} </a> ({{ film.duree|date('H:i:s')}}) </li>
         {% endfor %}
       </ul>
     {% endif %}
