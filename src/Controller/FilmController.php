@@ -42,8 +42,8 @@ class FilmController extends AbstractController
     #[Route('/vod/films-add', name: 'films_add', methods: ['GET', 'POST'])]
     public function add(Request $request): Response
     {
-        
-        $form = $this->createForm(FilmType::class);
+        $film = new Film();
+        $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
