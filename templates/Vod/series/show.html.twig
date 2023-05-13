@@ -1,85 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title serie.titre %}
-
-{% block stylesheets %}
-{{ parent() }}
-
-  <style>
-
-    .serie{
-      margin: 20px auto;
-      padding: 20px;
-      max-width: 800px;
-      background-color: #f7f7f7;
-      border-radius: 10px;
-    }
-
-    .serie-title {
-      font-size: 36px;
-      margin-bottom: 10px;
-    }
-
-    .serie-duration {
-      font-style: italic;
-      margin-bottom: 1rem;
-    }
-
-    .serie-description {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .serie-back-link {
-      display: block;
-      width: 200px;
-      margin: 20px auto;
-      text-align: center;
-      padding: 10px;
-      background-color: #007bff;
-      color: #fff;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-    .serie-delete-link {
-      display: block;
-      width: 200px;
-      margin: 20px auto;
-      text-align: center;
-      padding: 10px;
-      background-color: red;
-      color: #fff;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-
-    .serie-back-link:hover {
-      background-color: #0062cc;
-    }
-
-    .serie-delete-link:hover {
-      background-color: #9b0000;
-    }
-  </style>
-{% endblock %}
+{% block title %}{{ serie.titre }}{% endblock %}
 
 {% block body %}
-	{% include('vod/partials/header.html.twig') %}
-
+  {% include('vod/partials/header.html.twig') %}
 
   <div class="container">
-    <div class="serie">
-      <h1 class="serie-title">{{ serie.titre }}</h1>
-      <p class="serie-description">{{ serie.description }}</p>
-      <a href="{{ path('series_index') }}" class="serie-back-link">Retour</a>
-      <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="serie-back-link">Modifier serie</a>
-      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-serie-delete-form').submit()" class="serie-delete-link">Supprimer serie</a>
-
-      <form id="js-serie-delete-form" action="{{path('series_delete', {titre : serie.titre}) }}" method="post" style="display: none;">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.titre) }}">
-        <input type="hidden" name="_method" value="DELETE">
-      </form>
-
+    <div class="card my-5">
+      <div class="card-body">
+        <h1 class="card-title text-center">{{ serie.titre }}</h1>
+        <p class="card-text">{{ serie.description }}</p>
+        <div class="d-flex flex-column align-items-center justify-content-center mt-4">
+          <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier série</a>
+          <form id="js-serie-delete-form" action="{{ path('series_delete', {titre : serie.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.titre) }}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer série</button>
+          </form>
+          <a href="#" class="btn btn-success btn-block mb-2">Ajouter épisode</a>
+        </div>
+      </div>
     </div>
   </div>
+
 {% endblock %}
