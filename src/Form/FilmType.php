@@ -6,6 +6,8 @@ use App\Entity\Film;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 
 class FilmType extends AbstractType
 {
@@ -15,6 +17,12 @@ class FilmType extends AbstractType
             ->add('titre')
             ->add('description')
             ->add('duree')
+            ->add('image', FileType::class, [
+                'label' => false,
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false
+            ])
         ;
     }
 

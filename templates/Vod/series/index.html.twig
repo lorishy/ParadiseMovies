@@ -11,16 +11,19 @@
     {% if series is empty %}
       <p>Aucune série disponible pour le moment.</p>
     {% else %}
-      <div class="card mb-4">
-        <ul class="list-group list-group-flush">
-          {% for serie in series %}
-            <li class="list-group-item">
-              <a href="{{ path('series_show', {titre : serie.titre}) }}" class="text-decoration-none">
-                {{ serie.titre }}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for serie in series %}
+          <div class="col">
+            <div class="card h-100">
+              {# <img src="{{ asset('images/' ~ serie.image) }}" class="card-img-top" alt="{{ serie.titre }}"> #}
+              <div class="card-body">
+                <h5 class="card-title">{{ serie.titre }}</h5>
+                <p class="card-text">{{ serie.description }}</p>
+                <a href="{{ path('series_show', {titre : serie.titre}) }}" class="btn btn-primary">Voir la série</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     {% endif %}
 

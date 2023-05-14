@@ -3,36 +3,39 @@
 {% block title %}Films{% endblock %}
 
 {% block body %}
-	{% include('vod/partials/header.html.twig') %}
+    {% include('vod/partials/header.html.twig') %}
 
-  <div class="container">
-    <h1 class="my-4">Films disponibles</h1>
+    <div class="container">
+        <h1 class="my-4">Films disponibles</h1>
 
-    {% if films is empty %}
-      <p>Aucun film disponible pour le moment.</p>
-    {% else %}
-      <div class="card mb-4">
-        <ul class="list-group list-group-flush">
-          {% for film in films %}
-            <li class="list-group-item">
-              <a href="{{ path('films_show', {titre : film.titre}) }}" class="text-decoration-none">
-                {{ film.titre }}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
+        {% if films is empty %}
+            <p>Aucun film disponible pour le moment.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for film in films %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img-top" alt="{{ film.titre }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ film.titre }}</h5>
+                                <p class="card-text">{{ film.description }}</p>
+                                <a href="{{ path('films_show', {titre : film.titre}) }}" class="btn btn-primary">Voir le film</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-    <div class="d-flex justify-content-between my-4">
-      <a href="{{ path('app_home') }}" class="btn btn-primary">
-        Retour à l'accueil
-      </a>
-      <a href="{{ path('films_add') }}" class="btn btn-success">
-        Ajouter une nouvelle série
-      </a>
+        <div class="d-flex justify-content-between my-4">
+            <a href="{{ path('app_home') }}" class="btn btn-primary">
+                Retour à l'accueil
+            </a>
+            <a href="{{ path('films_add') }}" class="btn btn-success">
+                Ajouter un nouveau film
+            </a>
+        </div>
     </div>
-  </div>
 
     {% include('vod/partials/footer.html.twig') %}
 {% endblock %}
