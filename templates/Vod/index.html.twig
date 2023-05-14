@@ -8,27 +8,10 @@
     <h1>Bienvenue sur notre site de streaming / VOD</h1>
     <div class="btn-group">
       <a href="{{ path('films_index') }}" class="btn btn-primary">Films</a>
-      <a href="#" class="btn btn-primary">Séries</a>
+      <a href="{{ path('series_index') }}" class="btn btn-primary">Séries</a>
     </div>
   </div>
-{% endblock %}
 
-{% block stylesheets %}
-  <style>
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
+  {% include('vod/partials/footer.html.twig') %}
 
-    .btn-group {
-      margin-top: 20px;
-    }
-
-    .btn {
-      margin-right: 10px;
-    }
-  </style>
 {% endblock %}

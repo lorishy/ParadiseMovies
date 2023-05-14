@@ -1,67 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Series{% endblock %}
-
-{% block stylesheets %}
-  {{ parent() }}
-  <style>
-    /* Ajout de styles CSS pour la liste des series */
-    .uls {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .lis {
-      background-color: #f7f7f7;
-      padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 5px;
-    }
-
-    .h1s {
-      margin-top: 0;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 20px;
-    }
-
-    .button-container a {
-      padding: 10px 20px;
-      background-color: #0066ff;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
-    .button-container a:hover {
-      background-color: #0044cc;
-    }
-  </style>
-{% endblock %}
+{% block title %}Séries{% endblock %}
 
 {% block body %}
-	{% include('vod/partials/header.html.twig') %}
+  {% include('vod/partials/header.html.twig') %}
 
   <div class="container">
-    <h1 class="h1s">Séries disponibles</h1>
+    <h1 class="my-4">Séries disponibles</h1>
 
     {% if series is empty %}
-      <p>Aucune serie disponible pour le moment.</p>
+      <p>Aucune série disponible pour le moment.</p>
     {% else %}
-      <ul class="uls">
-        {% for serie in series %}
-          <li class="lis"><a href="{{ path('series_show', {titre : serie.titre})  }}" > {{ serie.titre }} </a></li>
-        {% endfor %}
-      </ul>
+      <div class="card mb-4">
+        <ul class="list-group list-group-flush">
+          {% for serie in series %}
+            <li class="list-group-item">
+              <a href="{{ path('series_show', {titre : serie.titre}) }}" class="text-decoration-none">
+                {{ serie.titre }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     {% endif %}
-    <div class="button-container ">
-      <a href="{{ path('app_home') }}">Retour accueil</a>
-      <a href="{{ path('series_add') }}">Ajouter nouvelle serie</a>
+
+    <div class="d-flex justify-content-between my-4">
+      <a href="{{ path('app_home') }}" class="btn btn-primary">
+        Retour à l'accueil
+      </a>
+      <a href="{{ path('series_add') }}" class="btn btn-success">
+        Ajouter une nouvelle série
+      </a>
     </div>
   </div>
+
+  {% include('vod/partials/footer.html.twig') %}
+
 {% endblock %}

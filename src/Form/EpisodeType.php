@@ -15,7 +15,6 @@ class EpisodeType extends AbstractType
             ->add('titre')
             ->add('description')
             ->add('duree')
-            ->add('serie')
         ;
     }
 

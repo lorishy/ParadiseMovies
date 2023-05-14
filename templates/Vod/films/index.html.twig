@@ -2,66 +2,37 @@
 
 {% block title %}Films{% endblock %}
 
-{% block stylesheets %}
-  {{ parent() }}
-  <style>
-    /* Ajout de styles CSS pour la liste des films */
-    .uls {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .lis {
-      background-color: #f7f7f7;
-      padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 5px;
-    }
-
-    .h1s {
-      margin-top: 0;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 20px;
-    }
-
-    .button-container a {
-      padding: 10px 20px;
-      background-color: #0066ff;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
-    .button-container a:hover {
-      background-color: #0044cc;
-    }
-  </style>
-{% endblock %}
-
 {% block body %}
 	{% include('vod/partials/header.html.twig') %}
 
   <div class="container">
-    <h1 class="h1s">Films disponibles</h1>
+    <h1 class="my-4">Films disponibles</h1>
 
     {% if films is empty %}
       <p>Aucun film disponible pour le moment.</p>
     {% else %}
-      <ul class="uls">
-        {% for film in films %}
-          <li class="lis"><a href="{{ path('films_show', {titre : film.titre})  }}" > {{ film.titre }} </a> ({{ film.duree|date('H:i:s')}}) </li>
-        {% endfor %}
-      </ul>
+      <div class="card mb-4">
+        <ul class="list-group list-group-flush">
+          {% for film in films %}
+            <li class="list-group-item">
+              <a href="{{ path('films_show', {titre : film.titre}) }}" class="text-decoration-none">
+                {{ film.titre }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
     {% endif %}
-    <div class="button-container">
-      <a href="{{ path('app_home') }}">Retour accueil</a>
-      <a href="{{ path('films_add') }}">Ajouter nouveau film</a>
+
+    <div class="d-flex justify-content-between my-4">
+      <a href="{{ path('app_home') }}" class="btn btn-primary">
+        Retour à l'accueil
+      </a>
+      <a href="{{ path('films_add') }}" class="btn btn-success">
+        Ajouter une nouvelle série
+      </a>
     </div>
   </div>
+
+    {% include('vod/partials/footer.html.twig') %}
 {% endblock %}

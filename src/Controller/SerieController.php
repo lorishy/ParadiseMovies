@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Repository\SerieRepository;
 use App\Entity\Serie;
+use App\Entity\Episode;
 use App\Form\SerieType;
+use App\Form\EpisodeType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,12 +55,13 @@ class SerieController extends AbstractController
             return $this->redirectToRoute('series_index');
         }
 
+
         return $this->render('vod/series/add.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/vod/series/{titre}/edit', name: 'series_edit', methods: ['GET', 'PUT'])]
+    #[Route('/vod/series/{titre}/edit', name: 'series_edit', methods: ['GET', 'PUT', 'POST'])]
     public function edit(Request $request, Serie $serie): Response
     {
         $form = $this->createForm(SerieType::class, $serie, [
@@ -74,11 +77,29 @@ class SerieController extends AbstractController
 
             return $this->redirectToRoute('series_index');
         }
+            
+        $episode = new Episode();
+        $episode->setSerie($serie);
+        $formEpisode = $this->createForm(EpisodeType::class, $episode);
+        $formEpisode->handleRequest($request);
+
+        if ($formEpisode->isSubmitted() && $formEpisode->isValid()) {
+            // dd("eee");
+            // $this->entityManager = $this->getDoctrine()->getManager();
+            $this->entityManager->persist($episode);
+            $this->entityManager->flush();
+            
+            $this->addFlash('success', 'L\'épisode a été ajouté avec succès.');
+            
+            return $this->redirectToRoute('series_show', ['titre' => $serie->getTitre()]);
+        }
 
         return $this->render('vod/series/edit.html.twig', [
             'serie' => $serie,
             'form' => $form->createView(),
+            'formEpisode' => $formEpisode->createView(),
         ]);
+        
     }
 
     

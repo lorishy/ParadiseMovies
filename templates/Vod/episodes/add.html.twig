@@ -1,0 +1,19 @@
+
+<div class="d-flex justify-content-center">
+  {{ form_start(formEpisode) }}
+    <div class="form-group">
+      {{ form_label(formEpisode.titre, 'Titre') }}
+      {{ form_widget(formEpisode.titre, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_label(formEpisode.description, 'Description') }}
+      {{ form_widget(formEpisode.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_label(formEpisode.duree, 'Durée') }}
+      {{ form_widget(formEpisode.duree, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    {# {{ form_row(formEpisode.serie) }} #}
+    <button type="submit" class="btn btn-success">Ajouter</button>
+  {{ form_end(formEpisode) }}
+</div>

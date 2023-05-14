@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	{% include('vod/partials/header.html.twig') %}
+    {% include 'vod/partials/header.html.twig' %}
 
     <div class="container">
         <div class="card mt-5">
@@ -20,19 +20,25 @@
                             </div>
                             <input type="submit" value="Modifier" class="btn btn-primary w-100">
                         {{ form_end(form) }}
+                        <h2>Episodes</h2>
+                        <ul>
+                            {% for episode in serie.episodes %}
+                                <li>{{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }} - </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="card my-5">
+        <div class="card my-5" id="card-add-episode">
             <div class="card-body">
                 <h2 class="card-title text-center">Ajouter un épisode</h2>
-                <div class="d-flex justify-content-center">
-                    <a href="#" class="btn btn-success">Ajouter épisode</a>
-                </div>
+                {% include 'vod/episodes/add.html.twig' with {'formEpisode': formEpisode} %}
             </div>
         </div>
     </div>
-    
+
+  {% include('vod/partials/footer.html.twig') %}
+
 {% endblock %}

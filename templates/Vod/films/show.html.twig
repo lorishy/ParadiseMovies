@@ -2,85 +2,25 @@
 
 {% block title film.titre %}
 
-{% block stylesheets %}
-{{ parent() }}
-
-  <style>
-
-    .film{
-      margin: 20px auto;
-      padding: 20px;
-      max-width: 800px;
-      background-color: #f7f7f7;
-      border-radius: 10px;
-    }
-
-    .film-title {
-      font-size: 36px;
-      margin-bottom: 10px;
-    }
-
-    .film-duration {
-      font-style: italic;
-      margin-bottom: 1rem;
-    }
-
-    .film-description {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .film-back-link {
-      display: block;
-      width: 200px;
-      margin: 20px auto;
-      text-align: center;
-      padding: 10px;
-      background-color: #007bff;
-      color: #fff;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-    .film-delete-link {
-      display: block;
-      width: 200px;
-      margin: 20px auto;
-      text-align: center;
-      padding: 10px;
-      background-color: red;
-      color: #fff;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-
-    .film-back-link:hover {
-      background-color: #0062cc;
-    }    
-    
-    .film-delete-link:hover {
-      background-color: #9b0000;
-    }
-  </style>
-{% endblock %}
-
 {% block body %}
 	{% include('vod/partials/header.html.twig') %}
-
-
+  
   <div class="container">
-    <div class="film">
-      <h1 class="film-title">{{ film.titre }}</h1>
-      <p class="film-duration">{{ film.duree|date('H:i:s') }}</p>
-      <p class="film-description">{{ film.description }}</p>
-      <a href="{{ path('films_index') }}" class="film-back-link">Retour</a>
-      <a href="{{ path('films_edit', {titre : film.titre}) }}" class="film-back-link">Modifier film</a>
-      <a href="#" onclick="event.preventDefault(); confirm('Etes vous sur ?') && document.getElementById('js-film-delete-form').submit()" class="film-delete-link">Supprimer film</a>
-
-      <form id="js-film-delete-form" action="{{path('films_delete', {titre : film.titre}) }}" method="post" style="display: none;">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token('film_deletion' ~ film.titre) }}">
-        <input type="hidden" name="_method" value="DELETE">
-      </form>
-
+    <div class="card my-5">
+      <div class="card-body">
+        <h1 class="card-title text-center">{{ film.titre }}</h1>
+        <p class="card-text">{{ film.description }}</p>
+        <div class="d-flex flex-column align-items-center justify-content-center mt-4">
+          <a href="{{ path('films_edit', {titre : film.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier film</a>
+          <form id="js-film-delete-form" action="{{ path('films_delete', {titre : film.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token('film_deletion' ~ film.titre) }}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer film</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
+
+    {% include('vod/partials/footer.html.twig') %}
 {% endblock %}
