@@ -30,9 +30,13 @@ class Serie
     #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Episode::class)]
     private Collection $episodes;
 
+    #[ORM\OneToMany(mappedBy: 'Serie', targetEntity: Acteur::class)]
+    private Collection $acteur;
+
     public function __construct()
     {
         $this->episodes = new ArrayCollection();
+        $this->acteur = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,6 +101,36 @@ class Serie
     public function __toString(): string
     {
         return $this->getTitre() ?? '';
+    }
+
+    /**
+     * @return Collection<int, Acteur>
+     */
+    public function getActeur(): Collection
+    {
+        return $this->acteur;
+    }
+
+    public function addActeur(Acteur $acteur): self
+    {
+        if (!$this->acteur->contains($acteur)) {
+            $this->acteur->add($acteur);
+            $acteur->setSerie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActeur(Acteur $acteur): self
+    {
+        if ($this->acteur->removeElement($acteur)) {
+            // set the owning side to null (unless already changed)
+            if ($acteur->getSerie() === $this) {
+                $acteur->setSerie(null);
+            }
+        }
+
+        return $this;
     }
 
 }
