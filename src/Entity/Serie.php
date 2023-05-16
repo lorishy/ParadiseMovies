@@ -105,6 +105,18 @@ class Serie
     {
         return $this->getTitre() ?? '';
     }
+    
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
 
 }
 

@@ -13,6 +13,8 @@ class EpisodeType extends AbstractType
     {
         $builder
             ->add('titre')
+            ->add('episode')
+            ->add('saison')
             ->add('description')
             ->add('duree')
         ;

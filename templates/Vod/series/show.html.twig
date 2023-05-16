@@ -10,12 +10,19 @@
       <div class="card-body">
         <h1 class="card-title text-center">{{ serie.titre }}</h1>
         <p class="card-text">{{ serie.description }}</p>
-        <h2>Episodes</h2>
-        <ul>
-            {% for episode in serie.episodes %}
-                <li>{{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }}</li>
-            {% endfor %}
+
+        {% set currentSeason = '' %}
+        {% for episode in serie.episodes|sort((a, b) => a.saison - b.saison) %}
+          {% if episode.saison != currentSeason %}
+            {% if currentSeason != '' %}</ul>{% endif %}
+            <h2>Saison {{ episode.saison }}</h2>
+            <ul>
+            {% set currentSeason = episode.saison %}
+          {% endif %}
+          <li>{{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }}</li>
+        {% endfor %}
         </ul>
+
         <div class="d-flex flex-column align-items-center justify-content-center mt-4">
           <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier série</a>
           <form id="js-serie-delete-form" action="{{ path('series_delete', {titre : serie.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">

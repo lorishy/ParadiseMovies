@@ -49,6 +49,19 @@ class SerieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            $titre = $form->get('titre')->getData();
+
+            if ($image) {
+                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
+
+                $image->move(
+                    $this->getParameter('series_images_directory'),
+                    $fichier
+                );
+                $serie->setImage($fichier);
+
+            }
             $this->entityManager->persist($serie);
             $this->entityManager->flush();
 
@@ -76,7 +89,7 @@ class SerieController extends AbstractController
             $titre = $form->get('titre')->getData();
 
             if ($image) {
-                $fichier = $titre.'.'.$image->guessExtension();
+                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
 
                 $image->move(
                     $this->getParameter('series_images_directory'),

@@ -20,8 +20,7 @@ class Episode
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $titre = null;
+
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
@@ -32,6 +31,15 @@ class Episode
     #[ORM\ManyToOne(inversedBy: 'episodes')]
     private ?Serie $serie = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $titre = null;
+
+    #[ORM\Column]
+    private ?int $episode = null;
+
+    #[ORM\Column]
+    private ?int $saison = null;
+
     use Timestampable;
 
     public function getId(): ?int
@@ -39,17 +47,6 @@ class Episode
         return $this->id;
     }
 
-    public function getTitre(): ?int
-    {
-        return $this->titre;
-    }
-
-    public function setTitre(int $titre): self
-    {
-        $this->titre = $titre;
-
-        return $this;
-    }
 
     public function getDescription(): ?string
     {
@@ -83,6 +80,42 @@ class Episode
     public function setSerie(?Serie $serie): self
     {
         $this->serie = $serie;
+
+        return $this;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(string $titre): self
+    {
+        $this->titre = $titre;
+
+        return $this;
+    }
+
+    public function getEpisode(): ?int
+    {
+        return $this->episode;
+    }
+
+    public function setEpisode(int $episode): self
+    {
+        $this->episode = $episode;
+
+        return $this;
+    }
+
+    public function getSaison(): ?int
+    {
+        return $this->saison;
+    }
+
+    public function setSaison(int $saison): self
+    {
+        $this->saison = $saison;
 
         return $this;
     }

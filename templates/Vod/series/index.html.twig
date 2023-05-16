@@ -13,14 +13,15 @@
     {% else %}
       <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for serie in series %}
-          <div class="col">
-            <div class="card h-100">
-              <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img-top" alt="{{ serie.titre }}">
-              <div class="card-body">
-                <h5 class="card-title">{{ serie.titre }}</h5>
-                <p class="card-text">{{ serie.description }}</p>
-                <a href="{{ path('series_show', {titre : serie.titre}) }}" class="btn btn-primary">Voir la série</a>
-              </div>
+          <div class="col-md-2 mb-4">
+             <a href="{{ path('series_show', {titre : serie.titre}) }}">
+              <div class="card h-100">
+                <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
+                <div class="card-body">
+                  <h5 class="card-title">{{ serie.titre }}</h5>
+                  <p class="card-text">{{ serie.description }}</p>
+                </div>
+                </a>
             </div>
           </div>
         {% endfor %}
