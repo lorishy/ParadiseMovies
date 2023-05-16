@@ -28,6 +28,9 @@ class Acteur
     #[ORM\Column(length: 255)]
     private ?string $metier = null;
 
+    #[ORM\ManyToOne(inversedBy: 'acteur')]
+    private ?Serie $Serie = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -65,6 +68,18 @@ class Acteur
     public function setMetier(string $metier): self
     {
         $this->metier = $metier;
+
+        return $this;
+    }
+
+    public function getSerie(): ?Serie
+    {
+        return $this->Serie;
+    }
+
+    public function setSerie(?Serie $Serie): self
+    {
+        $this->Serie = $Serie;
 
         return $this;
     }

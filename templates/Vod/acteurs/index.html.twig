@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Acteurs{% endblock %}
+
+{% block body %}
+    {% include('vod/partials/header.html.twig') %}
+
+    <div class="container">
+        <h1 class="my-4">Acteurs disponibles</h1>
+
+        {% if acteurs is empty %}
+            <p>Aucun acteur disponible pour le moment.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for acteur in acteurs %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {# <img src="{{ asset('uploads/acteurs_images/' ~ acteur.image) }}" class="card-img-top" alt="{{ acteur.nom }}"> #}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ acteur.prenom }} {{ acteur.nom }}</h5>
+                                <p class="card-text">{{ acteur.metier }}</p>
+                                <a href="{{ path('acteurs_show', {prenom : acteur.prenom, nom : acteur.nom}) }}" class="btn btn-primary">Voir</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-between my-4">
+            <a href="{{ path('app_home') }}" class="btn btn-primary">
+                Retour à l'accueil
+            </a>
+            <a href="{{ path('acteurs_add') }}" class="btn btn-success">
+                Ajouter un nouvel acteur
+            </a>
+        </div>
+    </div>
+
+    {% include('vod/partials/footer.html.twig') %}
+{% endblock %}

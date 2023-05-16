@@ -30,12 +30,16 @@ class Serie
     #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Episode::class)]
     private Collection $episodes;
 
+    #[ORM\OneToMany(mappedBy: 'Serie', targetEntity: Acteur::class)]
+    private Collection $acteur;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
     public function __construct()
     {
         $this->episodes = new ArrayCollection();
+        $this->acteur = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,18 +104,6 @@ class Serie
     public function __toString(): string
     {
         return $this->getTitre() ?? '';
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): self
-    {
-        $this->image = $image;
-
-        return $this;
     }
 
 }
