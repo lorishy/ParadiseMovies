@@ -15,7 +15,7 @@
         {% for serie in series %}
           <div class="col">
             <div class="card h-100">
-              {# <img src="{{ asset('images/' ~ serie.image) }}" class="card-img-top" alt="{{ serie.titre }}"> #}
+              <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img-top" alt="{{ serie.titre }}">
               <div class="card-body">
                 <h5 class="card-title">{{ serie.titre }}</h5>
                 <p class="card-text">{{ serie.description }}</p>
