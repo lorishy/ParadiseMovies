@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Filesystem;
+
 
 class SerieController extends AbstractController
 {
@@ -42,7 +44,7 @@ class SerieController extends AbstractController
 
 
     #[Route('/vod/series-add', name: 'series_add', methods: ['GET', 'POST'])]
-    public function add(Request $request): Response
+    public function add(Request $request, Filesystem $filesystem): Response
     {
         $serie = new Serie(); 
         $form = $this->createForm(SerieType::class, $serie);
@@ -55,8 +57,12 @@ class SerieController extends AbstractController
             if ($image) {
                 $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
 
+                $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
+
+                $filesystem->mkdir($directory); // Crée le dossier correspondant à la série
+
                 $image->move(
-                    $this->getParameter('series_images_directory'),
+                    $directory,
                     $fichier
                 );
                 $serie->setImage($fichier);
@@ -75,7 +81,7 @@ class SerieController extends AbstractController
     }
 
     #[Route('/vod/series/{titre}/edit', name: 'series_edit', methods: ['GET', 'PUT', 'POST'])]
-    public function edit(Request $request, Serie $serie): Response
+    public function edit(Request $request, Serie $serie, Filesystem $filesystem): Response
     {
         $form = $this->createForm(SerieType::class, $serie, [
             // 'action' => $this->generateUrl('target_route'),
@@ -87,16 +93,20 @@ class SerieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $image = $form->get('image')->getData();
             $titre = $form->get('titre')->getData();
-
+    
             if ($image) {
                 $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
-
+    
+                $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
+    
+                $filesystem->mkdir($directory); // Crée le dossier correspondant à la série
+    
                 $image->move(
-                    $this->getParameter('series_images_directory'),
+                    $directory,
                     $fichier
                 );
                 $serie->setImage($fichier);
-
+    
             }
             $this->entityManager->persist($serie);
             $this->entityManager->flush();

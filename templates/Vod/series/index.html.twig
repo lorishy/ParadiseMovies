@@ -5,6 +5,16 @@
 {% block body %}
   {% include('vod/partials/header.html.twig') %}
 
+  <style>
+    .card.scale-up:hover {
+      transform: scale(1.05);
+    }
+
+    .transition {
+      transition: transform 0.3s;
+    }
+  </style>
+
   <div class="container">
     <h1 class="my-4">Séries disponibles</h1>
 
@@ -14,15 +24,16 @@
       <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for serie in series %}
           <div class="col-md-2 mb-4">
-             <a href="{{ path('series_show', {titre : serie.titre}) }}">
-              <div class="card h-100">
-                <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
+            <a href="{{ path('series_show', {titre : serie.titre}) }}">
+              <div class="card h-100 scale-up transition">
+                {# <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}"> #}
+                <img src="{{ asset('uploads/series_images/' ~ serie.titre|replace({' ': '_'}) ~ '/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
                 <div class="card-body">
                   <h5 class="card-title">{{ serie.titre }}</h5>
                   <p class="card-text">{{ serie.description }}</p>
                 </div>
-                </a>
-            </div>
+              </div>
+            </a>
           </div>
         {% endfor %}
       </div>

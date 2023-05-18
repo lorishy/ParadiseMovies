@@ -11,17 +11,27 @@
         <h1 class="card-title text-center">{{ serie.titre }}</h1>
         <p class="card-text">{{ serie.description }}</p>
 
-        {% set currentSeason = '' %}
-        {% for episode in serie.episodes|sort((a, b) => a.saison - b.saison) %}
-          {% if episode.saison != currentSeason %}
-            {% if currentSeason != '' %}</ul>{% endif %}
-            <h2>Saison {{ episode.saison }}</h2>
-            <ul>
-            {% set currentSeason = episode.saison %}
-          {% endif %}
-          <li>{{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }}</li>
-        {% endfor %}
-        </ul>
+{% set saisons = [] %}
+{% for episode in serie.episodes %}
+  {% if episode.saison not in saisons %}
+    {% set saisons = saisons|merge([episode.saison]) %}
+  {% endif %}
+{% endfor %}
+
+{% set saisons = saisons|sort %}
+
+{% for season in saisons %}
+  {% set episodesInSeason = serie.episodes|filter(e => e.saison == season)|sort((a, b) => a.episode - b.episode) %}
+  <h2>Saison {{ season }}</h2>
+  <ul>
+    {% for episode in episodesInSeason %}
+      <li>{{ episode.episode }} - {{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}
+
+
+
 
         <div class="d-flex flex-column align-items-center justify-content-center mt-4">
           <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier série</a>

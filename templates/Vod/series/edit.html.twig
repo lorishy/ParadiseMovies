@@ -2,41 +2,77 @@
 
 {% block body %}
     {% include 'vod/partials/header.html.twig' %}
-
     <div class="container">
         <div class="card mt-5">
             <div class="card-body">
-                <h1 class="card-title text-center mb-4">Modifier la série {{serie.titre}}</h1>
+                <h1 class="card-title text-center mb-4">Modifier la série {{ serie.titre }}</h1>
                 <div class="row justify-content-center">
                     <div class="col-md-6">
-                        {{ form_start(form, {'method': 'PUT'}) }}
-                            <div class="form-group">
+                        {{ form_start(form, {'method': 'PUT', 'attr': {'enctype': 'multipart/form-data'}}) }}
+                            <div class="form-group mb-4">
                                 {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
                             </div>
-                            <div class="form-group mb-3">
+                            <div class="form-group mb-4">
                                 {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.description, {'attr': {'class': 'form-control mb-3'}}) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
                             </div>
-                            <input type="submit" value="Modifier" class="btn btn-primary w-100">
+                            <div class="form-group mb-4">
+                                {{ form_label(form.image, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Modifier" class="btn btn-primary w-100">
+                            </div>
                         {{ form_end(form) }}
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="card my-5" id="card-add-episode">
-            <div class="card-body">
-            <h2>Episodes</h2>
-                        <ul>
-                            {% for episode in serie.episodes %}
-                                <li>{{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }} - </li>
-                            {% endfor %}
-                        </ul>
-                <h2 class="card-title text-center">Ajouter un épisode</h2>
-                {% include 'vod/episodes/add.html.twig' with {'formEpisode': formEpisode} %}
+<div class="card my-5" id="card-add-episode">
+    <div class="card-body">
+        <h2>Episodes</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for episode in serie.episodes %}
+            <div class="col-md-2 mb-4">
+                <p>{{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }} - </p>
+            </div>                            
+            {% endfor %}
+        </div>
+        <h2 class="card-title text-center">Ajouter un épisode</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ form_start(formEpisode, {'attr': {'class': 'mt-4'}}) }}
+                <div class="form-group mb-4">
+                    {{ form_label(formEpisode.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(formEpisode.titre, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group mb-4">
+                    {{ form_label(formEpisode.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(formEpisode.description, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group mb-4">
+                    {{ form_label(formEpisode.duree, 'Durée', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(formEpisode.duree, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group mb-4">
+                    {{ form_label(formEpisode.episode, 'Épisode', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(formEpisode.episode, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group mb-4">
+                    {{ form_label(formEpisode.saison, 'Saison', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(formEpisode.saison, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Ajouter" class="btn btn-primary w-100">
+                </div>
+                {{ form_end(formEpisode) }}
             </div>
         </div>
+    </div>
+</div>
+
     </div>
 
   {% include('vod/partials/footer.html.twig') %}
