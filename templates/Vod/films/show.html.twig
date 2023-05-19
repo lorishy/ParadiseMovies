@@ -10,8 +10,11 @@
             <div class="card-body">
                 <h1 class="card-title text-center">{{ film.titre }}</h1>
                 <p class="card-text">{{ film.description }}</p>
+                <div class="d-flex justify-content-center align-items-center">
+                    <iframe width="560" height="315" src="{{ film.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
                 <div class="d-flex flex-column align-items-center justify-content-center mt-4">
-                    <img src="{{ asset('/uploads/films_images/' ~ film.image) }}" class="img-thumbnail" alt="Image du film">
+                    {# <img src="{{ asset('/uploads/films_images/' ~ film.image) }}" class="img-thumbnail" alt="Image du film"> #}
                     <a href="{{ path('films_edit', {titre : film.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier film</a>
                     <form id="js-film-delete-form" action="{{ path('films_delete', {titre : film.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token('film_deletion' ~ film.titre) }}">

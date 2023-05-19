@@ -23,6 +23,7 @@ class FilmType extends AbstractType
                 'mapped' => false,
                 'required' => false
             ])
+            ->add('video')
         ;
     }
 

@@ -40,7 +40,9 @@ class Episode
     #[ORM\Column]
     private ?int $saison = null;
 
-    use Timestampable;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $video = null;
+
 
     public function getId(): ?int
     {
@@ -116,6 +118,18 @@ class Episode
     public function setSaison(int $saison): self
     {
         $this->saison = $saison;
+
+        return $this;
+    }
+
+    public function getVideo(): ?string
+    {
+        return $this->video;
+    }
+
+    public function setVideo(string $video): self
+    {
+        $this->video = $video;
 
         return $this;
     }

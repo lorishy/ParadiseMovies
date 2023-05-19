@@ -31,6 +31,9 @@ class Film
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $video = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +83,18 @@ class Film
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getVideo(): ?string
+    {
+        return $this->video;
+    }
+
+    public function setVideo(?string $video): self
+    {
+        $this->video = $video;
 
         return $this;
     }

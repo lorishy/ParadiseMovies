@@ -13,6 +13,10 @@
       {{ form_label(formEpisode.duree, 'Durée') }}
       {{ form_widget(formEpisode.duree, {'attr': {'class': 'form-control'}}) }}
     </div>
+    <div class="form-group">
+      {{ form_label(formEpisode.video, 'Vidéo') }}
+      {{ form_widget(formEpisode.video, {'attr': {'class': 'form-control'}}) }}
+    </div>
     {# {{ form_row(formEpisode.serie) }} #}
     <button type="submit" class="btn btn-success">Ajouter</button>
   {{ form_end(formEpisode) }}

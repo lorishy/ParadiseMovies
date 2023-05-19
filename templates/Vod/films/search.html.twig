@@ -1,23 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Films{% endblock %}
+{% block title %}Recherche de films{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
         .ui-autocomplete {
-            position: absolute;
-            z-index: 1000;
-            padding: 5px;
             background-color: #fff;
             border: 1px solid #ccc;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        
-        /* Fixe la largeur de l'input */
-        .input-group .form-control {
-            width: 300px;
+            padding: 5px;
         }
     </style>
 {% endblock %}
@@ -25,18 +16,8 @@
 {% block body %}
     {% include('vod/partials/header.html.twig') %}
 
-    <style>
-        .card.scale-up:hover {
-            transform: scale(1.05);
-        }
-
-        .transition {
-            transition: transform 0.3s;
-        }
-    </style>
-
     <div class="container">
-        <h1 class="my-4"> Films disponibles</h1>
+        <h1 class="my-4">Recherche de films</h1>
 
         <form action="{{ path('films_search') }}" method="get">
             <div class="input-group mb-3">
@@ -50,16 +31,15 @@
         {% else %}
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for film in films %}
-                    <div class="col-md-2 mb-4">
-                        <a href="{{ path('films_show', {titre: film.titre}) }}">
-                            <div class="card h-100 scale-up transition">
-                                <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img-top" alt="{{ film.titre }}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ film.titre }}</h5>
-                                    <p class="card-text">{{ film.description }}</p>
-                                </div>
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img-top" alt="{{ film.titre }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ film.titre }}</h5>
+                                <p class="card-text">{{ film.description }}</p>
+                                <a href="{{ path('films_show', {titre: film.titre}) }}" class="btn btn-primary">Voir le film</a>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -88,11 +68,7 @@
             ];
 
             $("input[name='q']").autocomplete({
-                source: filmsTitres,
-                appendTo: ".input-group",
-                open: function(event, ui) {
-                    $(".ui-autocomplete").css("position", "relative");
-                }
+                source: filmsTitres
             });
         });
     </script>

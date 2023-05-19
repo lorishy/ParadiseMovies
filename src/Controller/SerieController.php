@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 class SerieController extends AbstractController
@@ -34,13 +35,35 @@ class SerieController extends AbstractController
     }
 
     #[Route('/vod/series/{titre}', name: 'series_show')]
-    public function show(Serie $serie): Response
+    public function show(Request $request, Serie $serie): Response
     {
+        $episodes = $serie->getEpisodes();
+
+        // Récupérer les saisons uniques à partir des épisodes de la série
+        $saisons = new ArrayCollection();
+        foreach ($episodes as $episode) {
+            $saison = $episode->getSaison();
+            if (!$saisons->contains($saison)) {
+                $saisons->add($saison);
+            }
+        }
+
+        // Récupérer la saison sélectionnée à partir des paramètres de requête
+        $selectedSeason = $request->query->get('saison');
+
+        // Filtrer les épisodes de la saison sélectionnée
+        $filteredEpisodes = $episodes->filter(function ($episode) use ($selectedSeason) {
+            return $episode->getSaison() == $selectedSeason;
+        });
 
         return $this->render('vod/series/show.html.twig', [
             'serie' => $serie,
+            'saisons' => $saisons,
+            'selectedSeason' => $selectedSeason,
+            'episodes' => $episodes,
         ]);
     }
+
 
 
     #[Route('/vod/series-add', name: 'series_add', methods: ['GET', 'POST'])]
@@ -84,59 +107,53 @@ class SerieController extends AbstractController
     public function edit(Request $request, Serie $serie, Filesystem $filesystem): Response
     {
         $form = $this->createForm(SerieType::class, $serie, [
-            // 'action' => $this->generateUrl('target_route'),
             'method' => 'PUT',
         ]);
-
+    
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $image = $form->get('image')->getData();
-            $titre = $form->get('titre')->getData();
+            // ... code de traitement pour la série ...
     
-            if ($image) {
-                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
-    
-                $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
-    
-                $filesystem->mkdir($directory); // Crée le dossier correspondant à la série
-    
-                $image->move(
-                    $directory,
-                    $fichier
-                );
-                $serie->setImage($fichier);
-    
-            }
             $this->entityManager->persist($serie);
             $this->entityManager->flush();
-
+    
             return $this->redirectToRoute('series_index');
         }
-            
+    
         $episode = new Episode();
         $episode->setSerie($serie);
         $formEpisode = $this->createForm(EpisodeType::class, $episode);
         $formEpisode->handleRequest($request);
-
+    
         if ($formEpisode->isSubmitted() && $formEpisode->isValid()) {
-            // dd("eee");
-            // $this->entityManager = $this->getDoctrine()->getManager();
-            $this->entityManager->persist($episode);
-            $this->entityManager->flush();
-            
-            $this->addFlash('success', 'L\'épisode a été ajouté avec succès.');
-            
-            return $this->redirectToRoute('series_show', ['titre' => $serie->getTitre()]);
+            // Vérifier si le numéro d'épisode existe déjà dans la saison
+            $existingEpisode = $this->entityManager->getRepository(Episode::class)->findOneBy([
+                'serie' => $serie,
+                'saison' => $episode->getSaison(),
+                'episode' => $episode->getEpisode(),
+            ]);
+    
+            if ($existingEpisode) {
+                $this->addFlash('error', 'Le numéro d\'épisode existe déjà dans cette saison.');
+            } else {
+                $this->entityManager->persist($episode);
+                $this->entityManager->flush();
+    
+                $this->addFlash('success', 'L\'épisode a été ajouté avec succès.');
+            }
+    
+            return $this->redirectToRoute('series_edit', ['titre' => $serie->getTitre(), 'saison' => 1]);
         }
-
+    
         return $this->render('vod/series/edit.html.twig', [
             'serie' => $serie,
             'form' => $form->createView(),
             'formEpisode' => $formEpisode->createView(),
         ]);
-        
+    
     }
+    
 
     
     #[Route('/vod/series/{titre}/delete', name: 'series_delete', methods: ['DELETE'])]
@@ -149,5 +166,20 @@ class SerieController extends AbstractController
             $entityManager->flush();
         }
         return $this->redirectToRoute('series_index');
+    }
+
+
+    #[Route('/vod/series/search', name: 'series_search')]
+    public function search(Request $request, SerieRepository $serieRepository) : Response
+    {
+        $searchTerm = $request->query->get('q');
+        
+        // Rechercher les series correspondant au terme de recherche
+        $series = $serieRepository->findByTitre($searchTerm); // Supposons que la méthode findByTitle existe dans le repository
+
+        return $this->render('vod/series/search.html.twig', [
+            'series' => $series,
+            'searchTerm' => $searchTerm,
+        ]);
     }
 }

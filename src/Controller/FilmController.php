@@ -121,4 +121,19 @@ class FilmController extends AbstractController
         }
         return $this->redirectToRoute('films_index');
     }
+
+    #[Route('/vod/films/search', name: 'films_search')]
+    public function search(Request $request, FilmRepository $filmRepository) : Response
+    {
+        $searchTerm = $request->query->get('q');
+        
+        // Rechercher les films correspondant au terme de recherche
+        $films = $filmRepository->findByTitre($searchTerm); // Supposons que la méthode findByTitle existe dans le repository
+
+        return $this->render('vod/films/search.html.twig', [
+            'films' => $films,
+            'searchTerm' => $searchTerm,
+        ]);
+    }
+
 }

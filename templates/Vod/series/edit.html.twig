@@ -1,6 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% for flashType, flashMessages in app.flashes %}
+  {% for flashMessage in flashMessages %}
+    {% set alertClass = flashType == 'success' ? 'alert-success' : 'alert-danger' %}
+    <div class="alert {{ alertClass }} text-center">{{ flashMessage }}</div>
+  {% endfor %}
+{% endfor %}
+
     {% include 'vod/partials/header.html.twig' %}
     <div class="container">
         <div class="card mt-5">
@@ -64,6 +71,10 @@
                     {{ form_label(formEpisode.saison, 'Saison', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(formEpisode.saison, {'attr': {'class': 'form-control'}}) }}
                 </div>
+                <div class="form-group mb-4">
+                    {{ form_label(formEpisode.video, 'Vidéo') }}
+                    {{ form_widget(formEpisode.video, {'attr': {'class': 'form-control'}}) }}
+                </div>
                 <div class="form-group">
                     <input type="submit" value="Ajouter" class="btn btn-primary w-100">
                 </div>
@@ -72,8 +83,7 @@
         </div>
     </div>
 </div>
-
-    </div>
+</div>
 
   {% include('vod/partials/footer.html.twig') %}
 

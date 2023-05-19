@@ -2,8 +2,28 @@
 
 {% block title %}Séries{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .ui-autocomplete {
+            position: absolute;
+            z-index: 1000;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        /* Fixe la largeur de l'input */
+        .input-group .form-control {
+            width: 300px;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-  {% include('vod/partials/header.html.twig') %}
+    {% include('vod/partials/header.html.twig') %}
 
   <style>
     .card.scale-up:hover {
@@ -15,8 +35,15 @@
     }
   </style>
 
-  <div class="container">
-    <h1 class="my-4">Séries disponibles</h1>
+    <div class="container">
+        <h1 class="my-4">Séries disponibles</h1>
+
+        <form action="{{ path('series_search') }}" method="get">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="q" placeholder="Rechercher un serie">
+                <button class="btn btn-primary" type="submit">Rechercher</button>
+            </div>
+        </form>
 
     {% if series is empty %}
       <p>Aucune série disponible pour le moment.</p>
@@ -24,9 +51,8 @@
       <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for serie in series %}
           <div class="col-md-2 mb-4">
-            <a href="{{ path('series_show', {titre : serie.titre}) }}">
+            <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
               <div class="card h-100 scale-up transition">
-                {# <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}"> #}
                 <img src="{{ asset('uploads/series_images/' ~ serie.titre|replace({' ': '_'}) ~ '/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
                 <div class="card-body">
                   <h5 class="card-title">{{ serie.titre }}</h5>
@@ -50,5 +76,25 @@
   </div>
 
   {% include('vod/partials/footer.html.twig') %}
+  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var seriesTitres = [
+                {% for serie in series %}
+                    "{{ serie.titre }}",
+                {% endfor %}
+            ];
+
+            $("input[name='q']").autocomplete({
+                source: seriesTitres,
+                appendTo: ".input-group",
+                open: function(event, ui) {
+                    $(".ui-autocomplete").css("position", "relative");
+                }
+            });
+        });
+    </script>
 
 {% endblock %}

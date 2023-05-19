@@ -7,14 +7,12 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EpisodeType extends AbstractType
+class EditEpisodeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('titre')
-            ->add('episode')
-            ->add('saison')
             ->add('description')
             ->add('duree')
             ->add('video')
