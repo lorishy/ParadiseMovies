@@ -42,6 +42,7 @@ class ActeurController extends AbstractController
     #[Route('/vod/acteurs-add', name: 'acteurs_add', methods: ['GET', 'POST'])]
     public function add(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $acteur = new Acteur();
         $form = $this->createForm(ActeurType::class, $acteur);
         $form->handleRequest($request);
@@ -77,6 +78,7 @@ class ActeurController extends AbstractController
     #[Route('/vod/acteurs/{prenom}_{nom}/edit', name: 'acteurs_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, Acteur $acteur): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(ActeurType::class, $acteur, [
             // 'action' => $this->generateUrl('target_route'),
             'method' => 'PUT',
@@ -101,6 +103,7 @@ class ActeurController extends AbstractController
     #[Route('/vod/acteurs/{prenom}_{nom}/delete', name: 'acteurs_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, Acteur $acteur, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid('acteur_deletion' . $acteur->getNom(), $request->request->get('csrf_token')))
         {
             $entityManager->remove($acteur);

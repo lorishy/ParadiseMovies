@@ -32,7 +32,7 @@ class FilmController extends AbstractController
     #[Route('/vod/films/{titre}', name: 'films_show')]
     public function show(Film $film): Response
     {
-
+        $this->denyAccessUnlessGranted('ROLE_USER');
         return $this->render('vod/films/show.html.twig', [
             'film' => $film,
         ]);
@@ -42,6 +42,7 @@ class FilmController extends AbstractController
     #[Route('/vod/films-add', name: 'films_add', methods: ['GET', 'POST'])]
     public function add(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $film = new Film();
         $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
@@ -76,6 +77,7 @@ class FilmController extends AbstractController
     #[Route('/vod/films/{titre}/edit', name: 'films_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, Film $film): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(FilmType::class, $film, [
             // 'action' => $this->generateUrl('target_route'),
             'method' => 'PUT',
@@ -114,6 +116,7 @@ class FilmController extends AbstractController
     #[Route('/vod/films/{titre}/delete', name: 'films_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, Film $film, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid('film_deletion' . $film->getTitre(), $request->request->get('csrf_token')))
         {
             $entityManager->remove($film);

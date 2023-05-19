@@ -69,6 +69,7 @@ class SerieController extends AbstractController
     #[Route('/vod/series-add', name: 'series_add', methods: ['GET', 'POST'])]
     public function add(Request $request, Filesystem $filesystem): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $serie = new Serie(); 
         $form = $this->createForm(SerieType::class, $serie);
         $form->handleRequest($request);
@@ -106,6 +107,7 @@ class SerieController extends AbstractController
     #[Route('/vod/series/{titre}/edit', name: 'series_edit', methods: ['GET', 'PUT', 'POST'])]
     public function edit(Request $request, Serie $serie, Filesystem $filesystem): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(SerieType::class, $serie, [
             'method' => 'PUT',
         ]);
@@ -159,7 +161,7 @@ class SerieController extends AbstractController
     #[Route('/vod/series/{titre}/delete', name: 'series_delete', methods: ['DELETE'])]
     public function delete(Request $request, Serie $serie, EntityManagerInterface $entityManager): Response
     {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid('serie_deletion' . $serie->getTitre(), $request->request->get('csrf_token')))
         {
             $entityManager->remove($serie);

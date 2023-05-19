@@ -36,6 +36,7 @@ class EpisodeController extends AbstractController
     #[Route('/vod/series/episode/{id}/edit', name: 'episodes_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, Episode $episode): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(EditEpisodeType::class, $episode, [
             // 'action' => $this->generateUrl('target_route'),
             'method' => 'PUT',
@@ -60,6 +61,7 @@ class EpisodeController extends AbstractController
     #[Route('/vod/series/episode/{id}/delete', name: 'episodes_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, Episode $episode, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid('episode_deletion' . $episode->getTitre(), $request->request->get('csrf_token')))
         {
             $entityManager->remove($episode);

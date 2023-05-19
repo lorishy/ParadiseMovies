@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FilmRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\Timestampable;
@@ -33,6 +35,18 @@ class Film
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $video = null;
+
+    #[ORM\ManyToMany(targetEntity: Acteur::class, inversedBy: 'films')]
+    private Collection $casting;
+
+    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'films')]
+    private Collection $Categorie;
+
+    public function __construct()
+    {
+        $this->casting = new ArrayCollection();
+        $this->Categorie = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -95,6 +109,54 @@ class Film
     public function setVideo(?string $video): self
     {
         $this->video = $video;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Acteur>
+     */
+    public function getCasting(): Collection
+    {
+        return $this->casting;
+    }
+
+    public function addCasting(Acteur $casting): self
+    {
+        if (!$this->casting->contains($casting)) {
+            $this->casting->add($casting);
+        }
+
+        return $this;
+    }
+
+    public function removeCasting(Acteur $casting): self
+    {
+        $this->casting->removeElement($casting);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Categorie>
+     */
+    public function getCategorie(): Collection
+    {
+        return $this->Categorie;
+    }
+
+    public function addCategorie(Categorie $categorie): self
+    {
+        if (!$this->Categorie->contains($categorie)) {
+            $this->Categorie->add($categorie);
+        }
+
+        return $this;
+    }
+
+    public function removeCategorie(Categorie $categorie): self
+    {
+        $this->Categorie->removeElement($categorie);
 
         return $this;
     }

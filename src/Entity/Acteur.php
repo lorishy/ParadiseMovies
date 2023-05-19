@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ActeurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\Timestampable;
 
@@ -30,6 +32,14 @@ class Acteur
 
     #[ORM\ManyToOne(inversedBy: 'acteur')]
     private ?Serie $Serie = null;
+
+    #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'casting')]
+    private Collection $films;
+
+    public function __construct()
+    {
+        $this->films = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -80,6 +90,33 @@ class Acteur
     public function setSerie(?Serie $Serie): self
     {
         $this->Serie = $Serie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Film>
+     */
+    public function getFilms(): Collection
+    {
+        return $this->films;
+    }
+
+    public function addFilm(Film $film): self
+    {
+        if (!$this->films->contains($film)) {
+            $this->films->add($film);
+            $film->addCasting($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilm(Film $film): self
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removeCasting($this);
+        }
 
         return $this;
     }
