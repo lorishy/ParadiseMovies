@@ -27,13 +27,15 @@
             </div>
         {% endif %}
 
-        <div class="d-flex justify-content-between my-4">
+        <div class="d-flex justify-content-between my-4" >
             <a href="{{ path('app_home') }}" class="btn btn-primary">
                 Retour à l'accueil
             </a>
-            <a href="{{ path('acteurs_add') }}" class="btn btn-success">
-                Ajouter un nouvel acteur
-            </a>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('acteurs_add') }}" class="btn btn-success">
+                    Ajouter un nouvel acteur
+                </a>
+            {% endif %}
         </div>
     </div>
 
