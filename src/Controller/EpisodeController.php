@@ -27,7 +27,7 @@ class EpisodeController extends AbstractController
     #[Route('/vod/series/{serie_titre}/{id}_{titre}', name: 'episodes_show')]
     public function show(Episode $episode): Response
     {
-
+        $this->denyAccessUnlessGranted('ROLE_USER');
         return $this->render('vod/series/episodes/show.html.twig', [
             'episode' => $episode,
         ]);

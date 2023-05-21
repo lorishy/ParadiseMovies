@@ -13,6 +13,7 @@
                 <div class="d-flex justify-content-center align-items-center">
                     <iframe width="560" height="315" src="{{ episode.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </div>
+                {% if app.user and is_granted('ROLE_ADMIN') %}
                 <div class="d-flex flex-column align-items-center justify-content-center mt-4">
                     {# <img src="{{ asset('/uploads/episodes_images/' ~ episode.image) }}" class="img-thumbnail" alt="Image du episode"> #}
                     <a href="{{ path('episodes_edit', {id : episode.id}) }}" class="btn btn-primary btn-block mb-2">Modifier episode</a>
@@ -22,6 +23,7 @@
                         <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer episode</button>
                     </form>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -69,9 +69,11 @@
             <a href="{{ path('app_home') }}" class="btn btn-primary">
                 Retour à l'accueil
             </a>
-            <a href="{{ path('films_add') }}" class="btn btn-success">
-                Ajouter un nouveau film
-            </a>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('films_add') }}" class="btn btn-success">
+                    Ajouter un nouveau film
+                </a>
+            {% endif %}
         </div>
     </div>
 

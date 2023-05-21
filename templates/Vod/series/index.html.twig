@@ -69,9 +69,11 @@
       <a href="{{ path('app_home') }}" class="btn btn-primary">
         Retour à l'accueil
       </a>
-      <a href="{{ path('series_add') }}" class="btn btn-success">
-        Ajouter une nouvelle série
-      </a>
+      {% if app.user and is_granted('ROLE_ADMIN') %}
+          <a href="{{ path('series_add') }}" class="btn btn-success">
+              Ajouter une nouvelle série
+          </a>
+      {% endif %}
     </div>
   </div>
 
@@ -86,7 +88,7 @@
                     "{{ serie.titre }}",
                 {% endfor %}
             ];
-
+ 
             $("input[name='q']").autocomplete({
                 source: seriesTitres,
                 appendTo: ".input-group",
