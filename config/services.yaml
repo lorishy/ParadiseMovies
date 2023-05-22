@@ -6,6 +6,8 @@
 parameters:
     films_images_directory: '%kernel.project_dir%/public/uploads/films_images'
     series_images_directory: '%kernel.project_dir%/public/uploads/series_images'
+    acteurs_images_directory: '%kernel.project_dir%/public/uploads/acteurs_images'
+    users_images_directory: '%kernel.project_dir%/public/uploads/users_images'
     
 services:
     # default configuration for services in *this* file
