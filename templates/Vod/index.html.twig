@@ -21,7 +21,8 @@
             <p>Aucun film trouvé pour cette recherche.</p>
         {% else %}
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for film in films|slice(0, 6) %}
+            {% set sorted_films = films|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
+            {% for film in sorted_films %}
                     <div class="col-md-2 mb-4">
                         <a href="{{ path('films_show', {titre: film.titre}) }}">
                             <div class="card h-100 scale-up transition">
@@ -42,7 +43,8 @@
           <p>Aucune série disponible pour le moment.</p>
         {% else %}
           <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% for serie in series |slice(0, 6)  %}
+            {% set sorted_series = series|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
+            {% for serie in sorted_series  %}
               <div class="col-md-2 mb-4">
                 <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
                   <div class="card h-100 scale-up transition">

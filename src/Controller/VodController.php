@@ -22,9 +22,12 @@ class VodController extends AbstractController
     #[Route('/vod', name: 'app_vod')]
     public function index(): Response
     {
-        $films = $this->entityManager->getRepository(Film::class)->findAll();
-        $series = $this->entityManager->getRepository(Serie::class)->findAll();
-
+        $filmRepository = $this->entityManager->getRepository(Film::class);
+        $films = $filmRepository->findBy([]);
+    
+        $serieRepository = $this->entityManager->getRepository(Serie::class);
+        $series = $serieRepository->findBy([]);
+    
         return $this->render('vod/index.html.twig', [
             'films' => $films,
             'series' => $series,

@@ -1,0 +1,35 @@
+<div class="card mt-4">
+    <div class="card-header">
+    <h1 class="text-center mb-0">Series</h1>
+    </div>
+    <div class="card-body"> 
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>Action </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for serie in series %}
+                    <tr>
+                        <td>{{ serie.id }}</td>
+                        <td>{{ serie.titre }}</td>
+                        <td>{{ serie.description }}</td>
+                        <td>
+                        <form id="js-serie-delete-form" action="{{ path('series_delete', {titre : serie.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.titre) }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier</a>
+                            <button type="submit" class="btn btn-danger btn-block mb-2">Supprimerr</button>
+                        </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ path('series_add') }}" class="btn btn-secondary mt-3">créer nouvelle serie</a>
+    </div>
+</div>

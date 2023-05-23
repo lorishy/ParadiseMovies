@@ -6,59 +6,12 @@
   {% include('vod/partials/header.html.twig') %}
 
   <div class="container">
-    <div class="card mt-4">
-      <div class="card-header">
-        <h1 class="text-center mb-0">Utilisateurs</h1>
-      </div>
-      <div class="card-body"> 
-            <table class="table">
-              <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Prénom</th>
-                      <th>Nom</th>
-                      <th>Email</th>
-                      <th>Rôles</th>
-                      <th>Action</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for user in users %}
-                      <tr>
-                          <td>{{ user.id }}</td>
-                          <td>{{ user.firstname }}</td>
-                          <td>{{ user.lastname }}</td>
-                          <td>{{ user.email }}</td>
-                          <td>
-                              {% for role in user.roles %}
-                                  {% if role == "ROLE_ADMIN" %}
-                                      {% set name = "Administrateur" %}
-                                      {% set color = "danger" %}
-                                  {% elseif role == "ROLE_PRODUCT_ADMIN" %}
-                                      {% set name = "Admin produits" %}
-                                      {% set color = "warning" %}
-                                  {% else %}
-                                      {% set name = "Membre" %}
-                                      {% set color = "success" %}
-                                  {% endif %}
-                                  <span class="badge bg-{{ color }}">{{ name }}</span>
-                              {% endfor %}
-                          </td>
-                          <td>
-                            <form id="js-user-delete-form" action="{{ path('users_delete', {id : user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
-                              <input type="hidden" name="csrf_token" value="{{ csrf_token('user_deletion' ~ user.id) }}">
-                              <input type="hidden" name="_method" value="DELETE">
-                              <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer utilisateur</button>
-                            </form>
-                          </td>
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-          <a href="{{ path('app_register') }}" class="btn btn-secondary mt-3">créer nouveau compte</a>
-        </div>
-      </div>
-    </div>
-    {% include('vod/partials/footer.html.twig') %}
+    {% include('admin/_listUsers.html.twig') %}
+    {% include('admin/_listFilms.html.twig') %}
+    {% include('admin/_listSeries.html.twig') %}
+  </div>
+
+
+  {% include('vod/partials/footer.html.twig') %}
 {% endblock %}
   

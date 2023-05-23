@@ -2,6 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Film;
+use App\Entity\Serie;
+use App\Repository\FilmRepository;
+use App\Repository\SerieRepository;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,8 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 
-
-// #[Route('/admin/utilisateurs', name: 'admin_users_')]
 class UsersController extends AbstractController
 {
 
@@ -28,8 +30,12 @@ class UsersController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $films = $this->entityManager->getRepository(Film::class)->findBy([], ['id' => 'asc']);
+    
+        $series = $this->entityManager->getRepository(Serie::class)->findBy([], ['id' => 'asc']);
+    
         $users = $usersRepository->findBy([], ['id' => 'asc']);
-        return $this->render('admin/index.html.twig', compact('users'));
+        return $this->render('admin/index.html.twig', compact('users', 'films', 'series'));
     }
 
     #[Route('/profil/{lastname}_{firstname}', name: 'users_show')]
