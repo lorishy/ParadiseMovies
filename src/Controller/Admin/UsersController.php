@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Repository\ActeurRepository;
+use App\Entity\Acteur;
 use App\Entity\Film;
 use App\Entity\Serie;
 use App\Repository\FilmRepository;
@@ -35,7 +37,10 @@ class UsersController extends AbstractController
         $series = $this->entityManager->getRepository(Serie::class)->findBy([], ['id' => 'asc']);
     
         $users = $usersRepository->findBy([], ['id' => 'asc']);
-        return $this->render('admin/index.html.twig', compact('users', 'films', 'series'));
+
+        $acteurs = $this->entityManager->getRepository(Acteur::class)->findBy([], ['id' => 'asc']);
+
+        return $this->render('admin/index.html.twig', compact('users', 'films', 'series', 'acteurs'));
     }
 
     #[Route('/profil/{lastname}_{firstname}', name: 'users_show')]

@@ -23,13 +23,13 @@
                             <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.titre) }}">
                             <input type="hidden" name="_method" value="DELETE">
                             <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier</a>
-                            <button type="submit" class="btn btn-danger btn-block mb-2">Supprimerr</button>
+                            <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer</button>
                         </form>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{{ path('series_add') }}" class="btn btn-secondary mt-3">créer nouvelle serie</a>
+        <a href="{{ path('series_add') }}" class="btn btn-secondary mt-3">ajouter serie</a>
     </div>
 </div>

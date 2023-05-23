@@ -9,6 +9,9 @@
                     <th>ID</th>
                     <th>Titre</th>
                     <th>Description</th>
+                    <th>Durée</th>
+                    <th>Casting</th> 
+                    <th>Catégories</th>
                     <th>Action </th>
                 </tr>
             </thead>
@@ -18,6 +21,19 @@
                         <td>{{ film.id }}</td>
                         <td>{{ film.titre }}</td>
                         <td>{{ film.description }}</td>
+                        <td>{{ film.duree|date('H:i:s') }}</td>
+                        <td>
+                            {% for casting in film.casting %}
+                                {{ casting}}
+                                {% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for categorie in film.categorie %}
+                                {{ categorie }}
+                                {% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
                         <td>
                         <form id="js-film-delete-form" action="{{ path('films_delete', {titre : film.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token('film_deletion' ~ film.titre) }}">
@@ -30,6 +46,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{{ path('films_add') }}" class="btn btn-secondary mt-3">créer nouveau film</a>
+        <a href="{{ path('films_add') }}" class="btn btn-secondary mt-3">ajouter film</a>
     </div>
 </div>
