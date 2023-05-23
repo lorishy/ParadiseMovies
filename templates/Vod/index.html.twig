@@ -4,12 +4,59 @@
 
 {% block body %}
 	{% include('vod/partials/header.html.twig') %}
-  <div class="container">
-    <h1>Bienvenue sur notre site de streaming / VOD</h1>
-    <div class="btn-group">
-      <a href="{{ path('films_index') }}" class="btn btn-primary">Films</a>
-      <a href="{{ path('series_index') }}" class="btn btn-primary">Séries</a>
-    </div>
+  
+  <style>
+    .card.scale-up:hover {
+      transform: scale(1.05);
+    }
+
+    .transition {
+      transition: transform 0.3s;
+    }
+  </style>
+
+    <div class="container">
+        <h1 class="my-4">Derniers films ajoutés</h1>
+        {% if films is empty %}
+            <p>Aucun film trouvé pour cette recherche.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for film in films|slice(0, 6) %}
+                    <div class="col-md-2 mb-4">
+                        <a href="{{ path('films_show', {titre: film.titre}) }}">
+                            <div class="card h-100 scale-up transition">
+                                <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img-top" alt="{{ film.titre }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ film.titre }}</h5>
+                                    <p class="card-text">{{ film.description }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <h1 class="my-4">Dernieres Séries ajoutées</h1>
+
+        {% if series is empty %}
+          <p>Aucune série disponible pour le moment.</p>
+        {% else %}
+          <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for serie in series |slice(0, 6)  %}
+              <div class="col-md-2 mb-4">
+                <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
+                  <div class="card h-100 scale-up transition">
+                    <img src="{{ asset('uploads/series_images/' ~ serie.titre|replace({' ': '_'}) ~ '/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ serie.titre }}</h5>
+                      <p class="card-text">{{ serie.description }}</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
   </div>
 
   {% include('vod/partials/footer.html.twig') %}

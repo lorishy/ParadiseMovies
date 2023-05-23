@@ -15,20 +15,5 @@ class ProfilController extends AbstractController
 
     private $entityManager;
 
-    #[Route('/profil', name: 'app_profil')]
-    public function index(EntityManagerInterface $entityManager): Response
-    {
-        $role = new Role();
-        $role->setLibelle("admin");
 
-        $entityManager->persist($role);
-        $entityManager->flush();
-
-        $entityManager->refresh($role);
-
-
-        return $this->render('profil/index.html.twig', [
-            'controller_name' => 'ProfilController',
-        ]);
-    }
 }

@@ -32,6 +32,16 @@ class UsersController extends AbstractController
         return $this->render('admin/index.html.twig', compact('users'));
     }
 
+    #[Route('/profil/{lastname}_{firstname}', name: 'users_show')]
+    public function show(User $user): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        return $this->render('profil/show.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
     #[Route('/admin/utilisateurs/{id}/delete', name: 'users_delete', methods: ['GET', 'DELETE'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
