@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 
@@ -25,9 +26,17 @@ class SerieController extends AbstractController
     }
 
     #[Route('/vod/series', name: 'series_index')]
-    public function index(): Response
+    public function index(    
+        SerieRepository $filmRepository, 
+        PaginatorInterface $paginatorInterface,
+        Request $request): Response
     {
-        $series = $this->entityManager->getRepository(Serie::class)->findAll();
+        $data = $this->entityManager->getRepository(Serie::class)->findAll();
+        $series = $paginatorInterface->paginate(
+            $data,
+            $request->query->getInt('page',1),
+            18
+        );
 
         return $this->render('vod/series/index.html.twig', [
             'series' => $series,
@@ -168,20 +177,5 @@ class SerieController extends AbstractController
             $entityManager->flush();
         }
         return $this->redirectToRoute('series_index');
-    }
-
-
-    #[Route('/vod/series/search', name: 'series_search')]
-    public function search(Request $request, SerieRepository $serieRepository) : Response
-    {
-        $searchTerm = $request->query->get('q');
-        
-        // Rechercher les series correspondant au terme de recherche
-        $series = $serieRepository->findByTitre($searchTerm); // Supposons que la méthode findByTitle existe dans le repository
-
-        return $this->render('vod/series/search.html.twig', [
-            'series' => $series,
-            'searchTerm' => $searchTerm,
-        ]);
     }
 }

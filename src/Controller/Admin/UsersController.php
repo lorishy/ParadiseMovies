@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\RegistrationFormType;
+use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UsersController extends AbstractController
@@ -33,9 +34,9 @@ class UsersController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $films = $this->entityManager->getRepository(Film::class)->findBy([], ['id' => 'asc']);
-    
+
         $series = $this->entityManager->getRepository(Serie::class)->findBy([], ['id' => 'asc']);
-    
+
         $users = $usersRepository->findBy([], ['id' => 'asc']);
 
         $acteurs = $this->entityManager->getRepository(Acteur::class)->findBy([], ['id' => 'asc']);
