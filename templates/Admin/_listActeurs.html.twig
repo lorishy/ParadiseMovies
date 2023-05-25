@@ -7,7 +7,6 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Prénom</th>
                     <th>Nom</th>
                     <th>Profession</th>
                     <th>Action </th>
@@ -17,8 +16,7 @@
                 {% for acteur in acteurs %}
                     <tr>
                         <td>{{ acteur.id }}</td>
-                        <td>{{ acteur.prenom }}</td>
-                        <td>{{ acteur.nom }}</td>
+                        <td><a href="{{path('acteurs_show' , {nom : acteur.nom , prenom : acteur.prenom})}}">{{acteur.prenom}} {{acteur.nom}} </a></td>
                         <td>{{ acteur.metier }}</td>
                         <td>
                         <form id="js-acteur-delete-form" action="{{ path('acteurs_delete', {prenom : acteur.prenom, nom : acteur.nom}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ActeurController extends AbstractController
 {
@@ -24,7 +25,7 @@ class ActeurController extends AbstractController
     {
         $acteurs = $this->entityManager->getRepository(Acteur::class)->findAll();
 
-        return $this->render('vod/acteurs/index.html.twig', [
+        return $this->render('acteurs/index.html.twig', [
             'acteurs' => $acteurs,
         ]);
     }
@@ -32,8 +33,7 @@ class ActeurController extends AbstractController
     #[Route('/vod/acteurs/{prenom}_{nom}', name: 'acteurs_show')]
     public function show(Acteur $acteur): Response
     {
-
-        return $this->render('vod/acteurs/show.html.twig', [
+        return $this->render('acteurs/show.html.twig', [
             'acteur' => $acteur,
         ]);
     }
@@ -49,28 +49,28 @@ class ActeurController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // $image = $form->get('image')->getData();
-            // $nom = $form->get('nom')->getData();
-            // $prenom = $form->get('prenom')->getData();
+            $image = $form->get('image')->getData();
+            $nom = $form->get('nom')->getData();
+            $prenom = $form->get('prenom')->getData();
 
-            // if ($image) {
-            //     $fichier = $prenom.' '.$nom.'.'.$image->guessExtension();
+            if ($image) {
+                $fichier = strtolower($prenom.' '.$nom).'.'.$image->guessExtension();
 
-            //     $image->move(
-            //         $this->getParameter('acteurs_images_directory'),
-            //         $fichier
-            //     );
-            //     $acteur->setImage($fichier);
+                $image->move(
+                    $this->getParameter('acteurs_images_directory'),
+                    $fichier
+                );
+                $acteur->setImage($fichier);
 
-            // }
+            }
 
             $this->entityManager->persist($acteur);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('acteurs_index');
+            // return $this->redirectToRoute('acteurs_index');
         }
 
-        return $this->render('vod/acteurs/add.html.twig', [
+        return $this->render('acteurs/add.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -93,7 +93,7 @@ class ActeurController extends AbstractController
             return $this->redirectToRoute('acteurs_index');
         }
 
-        return $this->render('vod/acteurs/edit.html.twig', [
+        return $this->render('acteurs/edit.html.twig', [
             'acteur' => $acteur,
             'form' => $form->createView(),
         ]);
@@ -111,4 +111,5 @@ class ActeurController extends AbstractController
         }
         return $this->redirectToRoute('acteurs_index');
     }
+
 }

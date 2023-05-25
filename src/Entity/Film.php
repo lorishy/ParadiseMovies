@@ -42,6 +42,9 @@ class Film
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'films')]
     private Collection $categorie;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date_sortie = null;
+
     public function __construct()
     {
         $this->casting = new ArrayCollection();
@@ -157,6 +160,18 @@ class Film
     public function removeCategorie(Categorie $categorie): self
     {
         $this->categorie->removeElement($categorie);
+
+        return $this;
+    }
+
+    public function getDateSortie(): ?\DateTimeInterface
+    {
+        return $this->date_sortie;
+    }
+
+    public function setDateSortie(\DateTimeInterface $date_sortie): self
+    {
+        $this->date_sortie = $date_sortie;
 
         return $this;
     }

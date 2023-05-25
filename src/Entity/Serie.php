@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\Timestampable;
 
@@ -30,16 +31,20 @@ class Serie
     #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Episode::class)]
     private Collection $episodes;
 
-    #[ORM\OneToMany(mappedBy: 'Serie', targetEntity: Acteur::class)]
-    private Collection $acteur;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date_sortie = null;
+
+    #[ORM\ManyToMany(targetEntity: Acteur::class, inversedBy: 'Serie')]
+    private Collection $casting;
 
     public function __construct()
     {
         $this->episodes = new ArrayCollection();
         $this->acteur = new ArrayCollection();
+        $this->casting = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +119,42 @@ class Serie
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getDateSortie(): ?\DateTimeInterface
+    {
+        return $this->date_sortie;
+    }
+
+    public function setDateSortie(\DateTimeInterface $date_sortie): self
+    {
+        $this->date_sortie = $date_sortie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Acteur>
+     */
+    public function getCasting(): Collection
+    {
+        return $this->casting;
+    }
+
+    public function addCasting(Acteur $casting): self
+    {
+        if (!$this->casting->contains($casting)) {
+            $this->casting->add($casting);
+        }
+
+        return $this;
+    }
+
+    public function removeCasting(Acteur $casting): self
+    {
+        $this->casting->removeElement($casting);
 
         return $this;
     }

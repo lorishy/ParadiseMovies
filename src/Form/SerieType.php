@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class SerieType extends AbstractType
 {
@@ -15,6 +16,10 @@ class SerieType extends AbstractType
         $builder
             ->add('titre')
             ->add('description')
+            ->add('date_sortie', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de sortie',
+            ])
             ->add('image', FileType::class, [
                 'label' => false,
                 'multiple' => false,

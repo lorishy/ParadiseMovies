@@ -19,7 +19,7 @@ class CategorieController extends AbstractController
     }
 
 
-    #[Route('/vod/categorie', name: 'app_categorie')]
+    #[Route('/categorie', name: 'app_categorie')]
     public function index(): Response
     {
         return $this->render('categorie/index.html.twig', [

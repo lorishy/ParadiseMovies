@@ -41,6 +41,32 @@
                                     {% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             </p>
+                            <p>
+                                {% set realisateurs = [] %}
+                                {% set acteurs = [] %}
+                                {% for acteur in film.casting %}
+                                   {% if acteur.metier == 'Réalisateur' %}
+                                        {% set realisateurs = realisateurs|merge([acteur]) %}
+                                    {% else %}
+                                        {% set acteurs = acteurs|merge([acteur]) %}
+                                    {% endif %}
+                                {% endfor %}
+                                Réalisateur : de 
+                                {% for realisateur in realisateurs %} 
+                                    <a href="{{path('acteurs_show', {prenom : realisateur.prenom , nom : realisateur.nom})}}">
+                                        {{ realisateur.prenom }} {{ realisateur.nom }}                                    
+                                    </a>
+                                    {% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                                    <br>
+                                    Avec 
+                                {% for acteur in acteurs %}
+                                    <a href="{{path('acteurs_show', {prenom : acteur.prenom , nom : acteur.nom})}}">
+                                        {{ acteur.prenom }} {{ acteur.nom }}
+                                    </a>
+                                    {% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>                           
                             <p class="card-text">{{ film.description }}</p>
                             <div class="d-flex justify-content-center align-items-center">
                                 <iframe width="560" height="315" src="{{ film.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

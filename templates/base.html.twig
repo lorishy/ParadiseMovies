@@ -17,6 +17,26 @@
 
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
+			<script>
+			$(document).ready(function() {
+			$('.select2-actors').select2({
+					ajax: {
+							url: $(this).data('ajax--url'),
+							dataType: 'json',
+							delay: 250,
+							processResults: function(data) {
+									return {
+											results: data
+									};
+							},
+							cache: true
+					},
+					placeholder: $(this).data('placeholder'),
+					allowClear: $(this).data('allow-clear'),
+					tags: true
+			});
+		});
+		</script>
 		{% endblock %}
 
 	</head>

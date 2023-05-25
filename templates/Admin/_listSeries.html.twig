@@ -16,8 +16,14 @@
                 {% for serie in series %}
                     <tr>
                         <td>{{ serie.id }}</td>
-                        <td>{{ serie.titre }}</td>
-                        <td>{{ serie.description }}</td>
+                        <td><a href="{{path('series_show' , {titre : serie.titre})}}">{{ serie.titre}} </a></td>
+                        <td>
+                            {% if serie.description|length > 25 %}
+                                {{ serie.description|slice(0, 25) ~ '...' }}
+                            {% else %}
+                                {{ serie.description }}
+                            {% endif %}
+                        </td>
                         <td>
                         <form id="js-serie-delete-form" action="{{ path('series_delete', {titre : serie.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.titre) }}">

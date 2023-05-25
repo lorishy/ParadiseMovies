@@ -30,15 +30,20 @@ class Acteur
     #[ORM\Column(length: 255)]
     private ?string $metier = null;
 
-    #[ORM\ManyToOne(inversedBy: 'acteur')]
-    private ?Serie $Serie = null;
 
     #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'casting')]
     private Collection $films;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    #[ORM\ManyToMany(targetEntity: Serie::class, mappedBy: 'casting')]
+    private Collection $Serie;
+
     public function __construct()
     {
         $this->films = new ArrayCollection();
+        $this->Serie = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,17 +87,6 @@ class Acteur
         return $this;
     }
 
-    public function getSerie(): ?Serie
-    {
-        return $this->Serie;
-    }
-
-    public function setSerie(?Serie $Serie): self
-    {
-        $this->Serie = $Serie;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Film>
@@ -116,6 +110,55 @@ class Acteur
     {
         if ($this->films->removeElement($film)) {
             $film->removeCasting($this);
+        }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getNomComplet() ?? '';
+    }
+    
+    public function getNomComplet(): string
+    {
+        return $this->prenom . ' ' . $this->nom;
+    }
+
+    /**
+     * @return Collection<int, Serie>
+     */
+    public function getSerie(): Collection
+    {
+        return $this->Serie;
+    }
+
+    public function addSerie(Serie $serie): self
+    {
+        if (!$this->Serie->contains($serie)) {
+            $this->Serie->add($serie);
+            $serie->addCasting($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSerie(Serie $serie): self
+    {
+        if ($this->Serie->removeElement($serie)) {
+            $serie->removeCasting($this);
         }
 
         return $this;
