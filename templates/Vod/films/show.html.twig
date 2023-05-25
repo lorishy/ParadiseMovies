@@ -2,20 +2,55 @@
 
 {% block title film.titre %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('{{ asset('/uploads/films_images/' ~ film.image) }}');
+            background-position: center;
+            background-size: cover;
+            filter: blur(5px);
+            opacity: 0.5;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     {% include('vod/partials/header.html.twig') %}
-  
+
+    <div class="background-image"></div>
+
     <div class="container">
         <div class="card my-5">
             <div class="card-body">
-                <h1 class="card-title text-center">{{ film.titre }}</h1>
-                <p class="card-text">{{ film.description }}</p>
-                <div class="d-flex justify-content-center align-items-center">
-                    <iframe width="560" height="315" src="{{ film.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ asset('/uploads/films_images/' ~ film.image) }}" class="img-thumbnail" alt="Image de {{ film.titre }}">
+                    </div>
+                        <div class="col-md-8">
+                            <h1 class="card-title">{{ film.titre }}</h1>
+                            <p>
+                                {% for categorie in film.categorie %}
+                                    {{ categorie.libelle }}
+                                    {% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="card-text">{{ film.description }}</p>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <iframe width="560" height="315" src="{{ film.video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
                 {% if app.user and is_granted('ROLE_ADMIN') %}
                     <div class="d-flex flex-column align-items-center justify-content-center mt-4">
-                        {# <img src="{{ asset('/uploads/films_images/' ~ film.image) }}" class="img-thumbnail" alt="Image du film"> #}
                         <a href="{{ path('films_edit', {titre : film.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier film</a>
                         <form id="js-film-delete-form" action="{{ path('films_delete', {titre : film.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token('film_deletion' ~ film.titre) }}">

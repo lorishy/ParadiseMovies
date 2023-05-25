@@ -24,7 +24,7 @@ class Film
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1000)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
@@ -40,12 +40,12 @@ class Film
     private Collection $casting;
 
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'films')]
-    private Collection $Categorie;
+    private Collection $categorie;
 
     public function __construct()
     {
         $this->casting = new ArrayCollection();
-        $this->Categorie = new ArrayCollection();
+        $this->categorie = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -142,13 +142,13 @@ class Film
      */
     public function getCategorie(): Collection
     {
-        return $this->Categorie;
+        return $this->categorie;
     }
 
     public function addCategorie(Categorie $categorie): self
     {
-        if (!$this->Categorie->contains($categorie)) {
-            $this->Categorie->add($categorie);
+        if (!$this->categorie->contains($categorie)) {
+            $this->categorie->add($categorie);
         }
 
         return $this;
@@ -156,7 +156,7 @@ class Film
 
     public function removeCategorie(Categorie $categorie): self
     {
-        $this->Categorie->removeElement($categorie);
+        $this->categorie->removeElement($categorie);
 
         return $this;
     }
