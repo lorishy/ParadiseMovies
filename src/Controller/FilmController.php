@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 class FilmController extends AbstractController
 {
@@ -20,9 +21,18 @@ class FilmController extends AbstractController
     }
 
     #[Route('/vod/films', name: 'films_index')]
-    public function index(): Response
+    public function index( 
+        FilmRepository $filmRepository, 
+        PaginatorInterface $paginatorInterface,
+        Request $request
+    ): Response
     {
-        $films = $this->entityManager->getRepository(Film::class)->findAll();
+        $data = $this->entityManager->getRepository(Film::class)->findAll();
+        $films = $paginatorInterface->paginate(
+            $data,
+            $request->query->getInt('page',1),
+            18
+        );
 
         return $this->render('vod/films/index.html.twig', [
             'films' => $films,
@@ -123,20 +133,6 @@ class FilmController extends AbstractController
             $entityManager->flush();
         }
         return $this->redirectToRoute('films_index');
-    }
-
-    #[Route('/vod/films/search', name: 'films_search')]
-    public function search(Request $request, FilmRepository $filmRepository) : Response
-    {
-        $searchTerm = $request->query->get('q');
-        
-        // Rechercher les films correspondant au terme de recherche
-        $films = $filmRepository->findByTitre($searchTerm); // Supposons que la méthode findByTitle existe dans le repository
-
-        return $this->render('vod/films/search.html.twig', [
-            'films' => $films,
-            'searchTerm' => $searchTerm,
-        ]);
     }
 
 }
