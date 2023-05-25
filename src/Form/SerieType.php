@@ -16,7 +16,7 @@ class SerieType extends AbstractType
         $builder
             ->add('titre')
             ->add('description')
-            ->add('date_sortie', DateType::class, [
+            ->add('sortie', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de sortie',
             ])

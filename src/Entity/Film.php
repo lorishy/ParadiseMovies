@@ -43,7 +43,7 @@ class Film
     private Collection $categorie;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_sortie = null;
+    private ?\DateTimeInterface $sortie = null;
 
     public function __construct()
     {
@@ -164,14 +164,14 @@ class Film
         return $this;
     }
 
-    public function getDateSortie(): ?\DateTimeInterface
+    public function getSortie(): ?\DateTimeInterface
     {
-        return $this->date_sortie;
+        return $this->sortie;
     }
 
-    public function setDateSortie(\DateTimeInterface $date_sortie): self
+    public function setSortie(\DateTimeInterface $date_sortie): self
     {
-        $this->date_sortie = $date_sortie;
+        $this->sortie = $sortie;
 
         return $this;
     }

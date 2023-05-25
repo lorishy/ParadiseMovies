@@ -35,7 +35,7 @@ class Serie
     private ?string $image = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_sortie = null;
+    private ?\DateTimeInterface $sortie = null;
 
     #[ORM\ManyToMany(targetEntity: Acteur::class, inversedBy: 'Serie')]
     private Collection $casting;
@@ -123,14 +123,14 @@ class Serie
         return $this;
     }
 
-    public function getDateSortie(): ?\DateTimeInterface
+    public function getSortie(): ?\DateTimeInterface
     {
-        return $this->date_sortie;
+        return $this->sortie;
     }
 
-    public function setDateSortie(\DateTimeInterface $date_sortie): self
+    public function setSortie(\DateTimeInterface $date_sortie): self
     {
-        $this->date_sortie = $date_sortie;
+        $this->sortie = $sortie;
 
         return $this;
     }

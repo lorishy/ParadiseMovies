@@ -32,7 +32,7 @@ class FilmType extends AbstractType
                 'attr' => ['rows' => 6], // nbr de lignes de la zone de texte
             ])
             ->add('duree')
-            ->add('date_sortie', DateType::class, [
+            ->add('sortie', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de sortie',
             ])

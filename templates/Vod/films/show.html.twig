@@ -41,6 +41,8 @@
                                     {% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             </p>
+                            <p>Sortie le {{ film.sortie|date('d/m/Y') }}</p>
+                            <p>{{ film.duree|date('H:i:s') }}</p>
                             <p>
                                 {% set realisateurs = [] %}
                                 {% set acteurs = [] %}
