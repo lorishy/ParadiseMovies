@@ -6,9 +6,11 @@ use App\Repository\ActeurRepository;
 use App\Entity\Acteur;
 use App\Entity\Film;
 use App\Entity\Serie;
+use App\Entity\Catégorie;
 use App\Repository\FilmRepository;
 use App\Repository\SerieRepository;
 use App\Repository\UserRepository;
+use App\Repository\CategorieRepository;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +30,7 @@ class UsersController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/admin/utilisateurs', name: 'admin_users_')]
+    #[Route('/admin/administration', name: 'admin_admin')]
     public function index(UserRepository $usersRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -42,6 +44,29 @@ class UsersController extends AbstractController
         $acteurs = $this->entityManager->getRepository(Acteur::class)->findBy([], ['id' => 'asc']);
 
         return $this->render('admin/index.html.twig', compact('users', 'films', 'series', 'acteurs'));
+    }
+
+    #[Route('/admin/dashboard', name: 'admin_dashboard')]
+    public function dashboard(
+        FilmRepository $filmRepository,
+        ActeurRepository $acteurRepository,
+        SerieRepository $serieRepository,
+        CategorieRepository $categorieRepository,
+        UserRepository $userRepository
+    ): Response {
+        $filmCount = $filmRepository->count([]);
+        $acteurCount = $acteurRepository->count([]);
+        $serieCount = $serieRepository->count([]);
+        $categorieCount = $categorieRepository->count([]);
+        $userCount = $userRepository->count([]);
+
+        return $this->render('admin/dashboard.html.twig', [
+            'filmCount' => $filmCount,
+            'acteurCount' => $acteurCount,
+            'serieCount' => $serieCount,
+            'categorieCount' => $categorieCount,
+            'userCount' => $userCount,
+        ]);
     }
 
     #[Route('/profil/{lastname}_{firstname}', name: 'users_show')]

@@ -24,13 +24,13 @@ class Film
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 1000)]
+    #[ORM\Column(length: 2500)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $duree = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $image = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -169,7 +169,7 @@ class Film
         return $this->sortie;
     }
 
-    public function setSortie(\DateTimeInterface $date_sortie): self
+    public function setSortie(\DateTimeInterface $sortie): self
     {
         $this->sortie = $sortie;
 

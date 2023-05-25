@@ -63,7 +63,8 @@ class FilmController extends AbstractController
             $titre = $form->get('titre')->getData();
 
             if ($image) {
-                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
+                $fichier = strtolower(str_replace(array(' ', "'",":",";",",","\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
+
 
                 $image->move(
                     $this->getParameter('films_images_directory'),
@@ -76,7 +77,7 @@ class FilmController extends AbstractController
             $this->entityManager->persist($film);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('films_index');
+            // return $this->redirectToRoute('films_index');
         }
 
         return $this->render('vod/films/add.html.twig', [
@@ -100,7 +101,7 @@ class FilmController extends AbstractController
             $titre = $form->get('titre')->getData();
 
             if ($image) {
-                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
+                $fichier = strtolower(str_replace(array(' ', "'",":",";",",","\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
 
                 $image->move(
                     $this->getParameter('films_images_directory'),
