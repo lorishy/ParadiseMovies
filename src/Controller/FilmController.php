@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Repository\FilmRepository;
 use App\Entity\Film;
 use App\Form\FilmType;
+use App\Form\SearchType;
+use App\Model\SearchData;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,6 +21,7 @@ class FilmController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
+    
 
     #[Route('/vod/films', name: 'films_index')]
     public function index( 
@@ -27,17 +30,28 @@ class FilmController extends AbstractController
         Request $request
     ): Response
     {
-        $data = $this->entityManager->getRepository(Film::class)->findAll();
-        $films = $paginatorInterface->paginate(
-            $data,
-            $request->query->getInt('page',1),
-            18
-        );
+        $searchData = new SearchData();
+        $form = $this->createForm(SearchType::class, $searchData);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchData->page = $request->query->getInt('page', 1);
+            $films = $filmRepository->findBySearch($searchData);
+
+            return $this->render('vod/films/index.html.twig', [
+                'form' => $form->createView(),
+                'films' => $films
+            ]);
+        }
 
         return $this->render('vod/films/index.html.twig', [
-            'films' => $films,
+            'form' => $form->createView(),
+            'films' => $filmRepository->findFilms($request->query->getInt('page', 1))
         ]);
     }
+
+
+    
 
     #[Route('/vod/films/{titre}', name: 'films_show')]
     public function show(Film $film): Response
@@ -84,6 +98,7 @@ class FilmController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/vod/films/{titre}/edit', name: 'films_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, Film $film): Response

@@ -12,7 +12,7 @@
                 <p class="card-text">{{ acteur.metier }}</p>
                 {% if app.user and is_granted('ROLE_ADMIN') %}
                     <div class="d-flex flex-column align-items-center justify-content-center mt-4">
-                        {# <img src="{{ asset('/uploads/acteurs_images/' ~ acteur.image) }}" class="img-thumbnail" alt="Image du acteur"> #}
+                        <img src="{{ asset('/uploads/acteurs_images/' ~ acteur.image) }}" class="img-thumbnail" alt="Image du acteur">
                         <a href="{{ path('acteurs_edit', {prenom : acteur.prenom, nom : acteur.nom}) }}" class="btn btn-primary btn-block mb-2">Modifier acteur</a>
                         <form id="js-acteur-delete-form" action="{{ path('acteurs_delete', {prenom : acteur.prenom, nom : acteur.nom}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token('acteur_deletion' ~ acteur.id ) }}">

@@ -5,12 +5,16 @@ namespace App\Controller;
 use App\Repository\ActeurRepository;
 use App\Entity\Acteur;
 use App\Form\ActeurType;
+use App\Form\SearchType;
+use App\Model\SearchData;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 class ActeurController extends AbstractController
 {
@@ -20,15 +24,44 @@ class ActeurController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+    // #[Route('/vod/acteurs', name: 'acteurs_index')]
+    // public function index(): Response
+    // {
+    //     $acteurs = $this->entityManager->getRepository(Acteur::class)->findAll();
+
+    //     return $this->render('acteurs/index.html.twig', [
+    //         'acteurs' => $acteurs,
+    //     ]);
+    // }
+
     #[Route('/vod/acteurs', name: 'acteurs_index')]
-    public function index(): Response
+    public function index( 
+        ActeurRepository $acteurRepository, 
+        PaginatorInterface $paginatorInterface,
+        Request $request
+    ): Response
     {
-        $acteurs = $this->entityManager->getRepository(Acteur::class)->findAll();
+        $searchData = new SearchData();
+        $form = $this->createForm(SearchType::class, $searchData);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchData->page = $request->query->getInt('page', 1);
+            $acteurs = $acteurRepository->findBySearch($searchData);
+
+            return $this->render('acteurs/index.html.twig', [
+                'form' => $form->createView(),
+                'acteurs' => $acteurs
+            ]);
+        }
 
         return $this->render('acteurs/index.html.twig', [
-            'acteurs' => $acteurs,
+            'form' => $form->createView(),
+            'acteurs' => $acteurRepository->findActeurs($request->query->getInt('page', 1))
         ]);
     }
+
+
 
     #[Route('/vod/acteurs/{prenom}_{nom}', name: 'acteurs_show')]
     public function show(Acteur $acteur): Response
@@ -37,6 +70,8 @@ class ActeurController extends AbstractController
             'acteur' => $acteur,
         ]);
     }
+
+    
 
 
     #[Route('/vod/acteurs-add', name: 'acteurs_add', methods: ['GET', 'POST'])]
@@ -54,7 +89,7 @@ class ActeurController extends AbstractController
             $prenom = $form->get('prenom')->getData();
 
             if ($image) {
-                $fichier = strtolower($prenom.' '.$nom).'.'.$image->guessExtension();
+                $fichier = strtolower($prenom.'_'.$nom).'.'.$image->guessExtension();
 
                 $image->move(
                     $this->getParameter('acteurs_images_directory'),
@@ -87,6 +122,20 @@ class ActeurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            $nom = $form->get('nom')->getData();
+            $prenom = $form->get('prenom')->getData();
+
+            if ($image) {
+                $fichier = strtolower($prenom.'_'.$nom).'.'.$image->guessExtension();
+
+                $image->move(
+                    $this->getParameter('acteurs_images_directory'),
+                    $fichier
+                );
+                $acteur->setImage($fichier);
+
+            }
             $this->entityManager->persist($acteur);
             $this->entityManager->flush();
 

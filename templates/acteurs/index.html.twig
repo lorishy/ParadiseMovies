@@ -7,7 +7,25 @@
 
     <div class="container">
         <h1 class="my-4">Acteurs disponibles</h1>
-
+            {% if form %}
+                  {{ form_start(form) }}
+                  <div class="flex justify-center">
+                      <div class="mb-3 xl:w-96">
+                        <div class="input-group relative flex flex-wrap items-stretch w-full mb-4">
+                            {{ form_widget(form.q, {'attr': {'class': 'form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'}}) }}
+                            {{ form_errors(form.q) }}
+                            <button class="btn btn-primary" type="submit">Rechercher</button>
+                        </div>
+                        <div style="display: none;">
+                            <div class="flex flex-col justify-center">
+                                {{ form_label(form.categorie, 'Catégories', {'attr': {'class': 'form-label inline-block mb-2 text-gray-700'}}) }}
+                                {{ form_widget(form.categorie, {'attr': {'class': 'mb-2 category-list'}}) }}
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+                  {{ form_end(form) }}
+              {% endif %}
         {% if acteurs is empty %}
             <p>Aucun acteur disponible pour le moment.</p>
         {% else %}
@@ -15,7 +33,7 @@
                 {% for acteur in acteurs %}
                     <div class="col">
                         <div class="card h-100">
-                            {# <img src="{{ asset('uploads/acteurs_images/' ~ acteur.image) }}" class="card-img-top" alt="{{ acteur.nom }}"> #}
+                            <img src="{{ asset('uploads/acteurs_images/' ~ acteur.image) }}" class="card-img-top" alt="{{ acteur.nom }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ acteur.prenom }} {{ acteur.nom }}</h5>
                                 <p class="card-text">{{ acteur.metier }}</p>

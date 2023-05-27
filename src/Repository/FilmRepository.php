@@ -2,9 +2,14 @@
 
 namespace App\Repository;
 
+use App\Entity\Acteur;
 use App\Entity\Film;
+use App\Entity\Categorie;
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Model\SearchData;
 
 /**
  * @extends ServiceEntityRepository<Film>
@@ -16,9 +21,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FilmRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginatorInterface)
     {
         parent::__construct($registry, Film::class);
+        
     }
 
     public function save(Film $entity, bool $flush = false): void
@@ -38,29 +44,71 @@ class FilmRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    
+    /**
+     * Get published films
+     *
+     * @param int $page
+     * @param ?Categorie $categorie
+     * @param ?Acteur $acteur
+     * 
+     * @return PaginationInterface
+     */
+    public function findFilms(
+        int $page,
+        ?Categorie $categorie = null,
+    ): PaginationInterface {
+        $data = $this->createQueryBuilder('f')
+            ->select('f')
+            ->addOrderBy('f.createdAt', 'DESC');
 
-//    /**
-//     * @return Film[] Returns an array of Film objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('f.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        if (isset($categorie)) {
+            $data = $data
+                ->join('f.categories', 'c')
+                ->andWhere(':categorie IN (c)')
+                ->setParameter('category', $categorie);
+        }
 
-//    public function findOneBySomeField($value): ?Film
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $data->getQuery()
+            ->getResult();
+
+        $films = $this->paginatorInterface->paginate($data, $page, 24);
+
+        return $films;
+    }
+
+
+    /**
+     * @param SearchData $searchData
+     * @return PaginationInterface
+     */
+    public function findBySearch(SearchData $searchData): PaginationInterface
+    {
+        $data = $this->createQueryBuilder('f')
+            ->select('f')
+            ->addOrderBy('f.createdAt', 'DESC');
+
+        if (!empty($searchData->q)) {
+            $data = $data
+                ->andWhere('f.titre LIKE :q')
+                ->orWhere('f.description LIKE :q')
+                ->setParameter('q', "%{$searchData->q}%");
+        }
+
+        if (!empty($searchData->categorie)) {
+            $data = $data
+                ->join('f.categorie', 'c')
+                ->andWhere('c.id IN (:categorie)')
+                ->setParameter('categorie', $searchData->categorie);
+        }
+
+        $data = $data
+            ->getQuery()
+            ->getResult();
+
+        $films = $this->paginatorInterface->paginate($data, $searchData->page, 24);
+
+        return $films;
+    }
+
 }

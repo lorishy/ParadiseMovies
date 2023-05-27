@@ -3,17 +3,50 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-	{% include('vod/partials/header.html.twig') %}
-  
-  <style>
-    .card.scale-up:hover {
-      transform: scale(1.05);
-    }
+    {% include('vod/partials/header.html.twig') %}
 
-    .transition {
-      transition: transform 0.3s;
-    }
-  </style>
+    <style>
+        .card.scale-up:hover {
+            transform: scale(1.05);
+        }
+
+        .transition {
+            transition: transform 0.3s;
+        }
+
+        .card-title {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover .card-title {
+            opacity: 1;
+        }
+
+        .card-content {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-content .card-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(100%);
+        }
+
+        .card-content:hover .card-title {
+            opacity: 1;
+            transform: translateY(0%);
+        }
+    </style>
 
     <div class="container">
         <h1 class="my-4">Derniers films ajoutés</h1>
@@ -21,16 +54,27 @@
             <p>Aucun film trouvé pour cette recherche.</p>
         {% else %}
             <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% set sorted_films = films|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
-            {% for film in sorted_films %}
+                {% set sorted_films = films|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
+                {% for film in sorted_films %}
                     <div class="col-md-2 mb-4">
                         <a href="{{ path('films_show', {titre: film.titre}) }}">
                             <div class="card h-100 scale-up transition">
-                                <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img-top" alt="{{ film.titre }}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ film.titre }}</h5>
-                                    {# <p class="card-text">{{ film.description }}</p> #}
+                                <div class="card-content">
+                                    <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img" alt="{{ film.titre }}">
+                                    <div class="card-title">{{ film.titre }}
+                                    <br>
+                                    Avec
+                                    {% for casting in film.casting %}
+                                        {{ casting }}
+                                        {% if not loop.last and loop.index < 2 %}, {% endif %}
+                                    {% endfor %}
+                                    <br>
+                                    {{ film.duree|date('H:i:s') }}
+                                    </div>
                                 </div>
+                                {# <div class="card-body">
+                                    <p class="card-text">{{ film.description }}</p>
+                                </div> #}
                             </div>
                         </a>
                     </div>
@@ -40,14 +84,15 @@
         <h1 class="my-4">Dernieres Séries ajoutées</h1>
 
         {% if series is empty %}
-          <p>Aucune série disponible pour le moment.</p>
+            <p>Aucune série disponible pour le moment.</p>
         {% else %}
-          <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% set sorted_series = series|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
-            {% for serie in sorted_series  %}
-              <div class="col-md-2 mb-4">
-                <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
-                  <div class="card h-100 scale-up transition">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% set sorted_series = series|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
+                {% for serie in sorted_series  %}
+                    <div class="col-md-2 mb-4">
+                        <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
+                            <div class="card h-100 scale-up transition">
+                                <div class="card-content">
                     <img src="{{ asset('uploads/series_images/' ~ serie.titre|replace({' ': '_'}) ~ '/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
                     <div class="card-body">
                       <h5 class="card-title">{{ serie.titre }}</h5>

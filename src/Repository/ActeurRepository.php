@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Acteur;
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Model\SearchData;
 
 /**
  * @extends ServiceEntityRepository<Acteur>
@@ -16,7 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ActeurRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginatorInterface)
     {
         parent::__construct($registry, Acteur::class);
     }
@@ -38,29 +41,56 @@ class ActeurRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+   /**
+     * Get published acteurs
+     *
+     * @param int $page
+     * @param ?Categorie $categorie
+     * @param ?Acteur $acteur
+     * 
+     * @return PaginationInterface
+     */
+    public function findActeurs(
+        int $page,
+    ): PaginationInterface {
+        $data = $this->createQueryBuilder('a')
+            ->select('a')
+            ->addOrderBy('a.createdAt', 'DESC');
 
-//    /**
-//     * @return Acteur[] Returns an array of Acteur objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        $data->getQuery()
+            ->getResult();
 
-//    public function findOneBySomeField($value): ?Acteur
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $acteurs = $this->paginatorInterface->paginate($data, $page, 24);
+
+        return $acteurs;
+    }
+
+
+    /**
+     * @param SearchData $searchData
+     * @return PaginationInterface
+     */
+    public function findBySearch(SearchData $searchData): PaginationInterface
+    {
+        $data = $this->createQueryBuilder('a')
+            ->select('a')
+            ->addOrderBy('a.createdAt', 'DESC');
+
+        if (!empty($searchData->q)) {
+            $data = $data
+                ->andWhere('a.nom LIKE :q')
+                ->orWhere('a.prenom LIKE :q')
+                ->orWhere('a.metier LIKE :q')
+                ->setParameter('q', "%{$searchData->q}%");
+        }
+
+        $data = $data
+            ->getQuery()
+            ->getResult();
+
+        $acteurs = $this->paginatorInterface->paginate($data, $searchData->page, 24);
+
+        return $acteurs;
+    }
+
 }
