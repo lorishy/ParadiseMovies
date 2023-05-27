@@ -25,7 +25,7 @@ class Serie
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 2500)]
     private ?string $description = null;
 
     #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Episode::class)]
@@ -46,7 +46,6 @@ class Serie
     public function __construct()
     {
         $this->episodes = new ArrayCollection();
-        $this->acteur = new ArrayCollection();
         $this->casting = new ArrayCollection();
         $this->categorie = new ArrayCollection();
     }
@@ -132,7 +131,7 @@ class Serie
         return $this->sortie;
     }
 
-    public function setSortie(\DateTimeInterface $date_sortie): self
+    public function setSortie(\DateTimeInterface $sortie): self
     {
         $this->sortie = $sortie;
 

@@ -1,13 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{% for flashType, flashMessages in app.flashes %}
-  {% for flashMessage in flashMessages %}
-    {% set alertClass = flashType == 'success' ? 'alert-success' : 'alert-danger' %}
-    <div class="alert {{ alertClass }} text-center">{{ flashMessage }}</div>
-  {% endfor %}
-{% endfor %}
-
     {% include 'vod/partials/header.html.twig' %}
     {% for flashType, flashMessages in app.flashes %}
         {% for flashMessage in flashMessages %}

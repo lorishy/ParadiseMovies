@@ -17,7 +17,9 @@ class EpisodeType extends AbstractType
             ->add('saison')
             ->add('description')
             ->add('duree')
-            ->add('video')
+            ->add('video', null, [
+                'empty_data' => 'https://www.youtube.com/embed/mkggXE5e2yk',
+            ])
         ;
     }
 

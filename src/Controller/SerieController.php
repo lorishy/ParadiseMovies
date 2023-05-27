@@ -6,6 +6,8 @@ use App\Repository\SerieRepository;
 use App\Entity\Serie;
 use App\Entity\Episode;
 use App\Form\SerieType;
+use App\Form\SearchType;
+use App\Model\SearchData;
 use App\Form\EpisodeType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,24 +26,35 @@ class SerieController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
+    
 
     #[Route('/vod/series', name: 'series_index')]
-    public function index(    
-        SerieRepository $filmRepository, 
+    public function index( 
+        serieRepository $serieRepository, 
         PaginatorInterface $paginatorInterface,
-        Request $request): Response
+        Request $request
+    ): Response
     {
-        $data = $this->entityManager->getRepository(Serie::class)->findAll();
-        $series = $paginatorInterface->paginate(
-            $data,
-            $request->query->getInt('page',1),
-            18
-        );
+        $searchData = new SearchData();
+        $form = $this->createForm(SearchType::class, $searchData);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchData->page = $request->query->getInt('page', 1);
+            $series = $serieRepository->findBySearch($searchData);
+
+            return $this->render('vod/series/index.html.twig', [
+                'form' => $form->createView(),
+                'series' => $series
+            ]);
+        }
 
         return $this->render('vod/series/index.html.twig', [
-            'series' => $series,
+            'form' => $form->createView(),
+            'series' => $serieRepository->findseries($request->query->getInt('page', 1))
         ]);
     }
+
 
     #[Route('/vod/series/{titre}', name: 'series_show')]
     public function show(Request $request, Serie $serie): Response
@@ -90,12 +103,15 @@ class SerieController extends AbstractController
             if ($image) {
                 $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
 
-                $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
+                //pour mettre dans un dossier au titre de la serie
+                // $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
 
-                $filesystem->mkdir($directory); // Crée le dossier correspondant à la série
+                // $filesystem->mkdir($directory); // Crée le dossier correspondant à la série
 
                 $image->move(
-                    $directory,
+                    //pour mettre dans un dossier au titre de la serie
+                    // $directory,  
+                    $this->getParameter('series_images_directory'),
                     $fichier
                 );
                 $serie->setImage($fichier);
@@ -124,8 +140,28 @@ class SerieController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // ... code de traitement pour la série ...
-    
+            
+            $image = $form->get('image')->getData();
+            $titre = $form->get('titre')->getData();
+
+            if ($image) {
+                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
+
+                //pour mettre dans un dossier au titre de la serie
+                // $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
+
+                // $filesystem->mkdir($directory); // Crée le dossier correspondant à la série
+
+                $image->move(
+                    //pour mettre dans un dossier au titre de la serie
+                    // $directory,  
+                    $this->getParameter('series_images_directory'),
+                    $fichier
+                );
+                $serie->setImage($fichier);
+
+            }
+
             $this->entityManager->persist($serie);
             $this->entityManager->flush();
     

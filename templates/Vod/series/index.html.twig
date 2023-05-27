@@ -1,23 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Séries{% endblock %}
+{% block title %}series{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .ui-autocomplete {
-            position: absolute;
-            z-index: 1000;
-            padding: 5px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            max-height: 150px;
-            overflow-y: auto;
+        .card.scale-up:hover {
+            transform: scale(1.05);
         }
-        
-        /* Fixe la largeur de l'input */
-        .input-group .form-control {
-            width: 300px;
+
+        .transition {
+            transition: transform 0.3s;
+        }
+
+        .card-title {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover .card-title {
+            opacity: 1;
+        }
+
+        .card-content {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-content .card-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(100%);
+        }
+
+        .card-content:hover .card-title {
+            opacity: 1;
+            transform: translateY(0%);
         }
     </style>
 {% endblock %}
@@ -25,65 +51,107 @@
 {% block body %}
     {% include('vod/partials/header.html.twig') %}
 
-  <style>
-    .card.scale-up:hover {
-      transform: scale(1.05);
-    }
+    <style>
+        .card.scale-up:hover {
+            transform: scale(1.05);
+        }
 
-    .transition {
-      transition: transform 0.3s;
-    }
-  </style>
+        .transition {
+            transition: transform 0.3s;
+        }
+    </style>
 
     <div class="container">
-        <h1 class="my-4">Séries disponibles</h1>
+        <h1 class="my-4"> series disponibles</h1>
 
-        <form action="#" method="get">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" name="q" placeholder="Rechercher un serie">
-                <button class="btn btn-primary" type="submit">Rechercher</button>
-            </div>
-        </form>
-
-    {% if series is empty %}
-      <p>Aucune série disponible pour le moment.</p>
-    {% else %}
-      <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for serie in series %}
-          <div class="col-md-2 mb-4">
-            <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
-              <div class="card h-100 scale-up transition">
-                <img src="{{ asset('uploads/series_images/' ~ serie.titre|replace({' ': '_'}) ~ '/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
-                <div class="card-body">
-                  <h5 class="card-title">{{ serie.titre }}</h5>
-                  <p class="card-text">{{ serie.description }}</p>
+        {% if form %}
+            {{ form_start(form) }}
+            <div class="flex justify-center">
+                <div class="mb-3 xl:w-96">
+                    <div class="input-group relative flex flex-wrap items-stretch w-full mb-4">
+                        {{ form_widget(form.q, {'attr': {'class': 'form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'}}) }}
+                        {{ form_errors(form.q) }}
+                        <button class="btn btn-primary" type="submit">Rechercher</button>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        {{ form_label(form.categorie, 'Catégories', {'attr': {'class': 'form-label inline-block mb-2 text-gray-700'}}) }}
+                        {{ form_widget(form.categorie, {'attr': {'class': 'mb-2 category-list'}}) }}
+                        <style>
+                            .category-list label {
+                                margin-right: 8px; /* Ajustez la valeur selon l'espace souhaité */
+                            }
+                        </style>
+                    </div>
                 </div>
-              </div>
+            </div>
+            {{ form_end(form) }}
+        {% endif %}
+
+
+        {% if series is empty %}
+            <p>Aucun serie trouvé pour cette recherche.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for serie in series %}
+                    <div class="col-md-2 mb-4">
+                        <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
+                            <div class="card h-100 scale-up transition">              
+                                <div class="card-content">
+                                    <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img" alt="{{ serie.titre }}">
+                                    <div class="card-title">{{ serie.titre }}
+                                    <br>
+                                    {% set realisateurs = [] %}
+                                    {% set acteurs = [] %}
+                                    {% for acteur in serie.casting %}
+                                    {% if acteur.metier == 'Réalisateur' %}
+                                            {% set realisateurs = realisateurs|merge([acteur]) %}
+                                        {% else %}
+                                            {% set acteurs = acteurs|merge([acteur]) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    De 
+                                    {% for realisateur in realisateurs %} 
+                                            {{ realisateur.prenom }} {{ realisateur.nom }}                                    
+                                        {% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                        <br>
+                                        Avec 
+                                    {% for acteur in acteurs %}
+                                            {{ acteur.prenom }} {{ acteur.nom }}
+                                        {% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    </div>
+                                </div>
+                                {# <div class="card-body">
+                                    <p class="card-text">{{ serie.description }}</p>
+                                </div> #}
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div class="navigation flex justify-center mb-8">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {{ knp_pagination_render(series,"", {'order': app.request.get('order')}) }}
+                </ul>
+            </nav>
+        </div>
+        
+        <div class="d-flex justify-content-between my-4">
+            <a href="{{ path('app_home') }}" class="btn btn-primary">
+                Retour à l'accueil
             </a>
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <div class="navigation flex justify-center mb-8">
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          {{ knp_pagination_render(series) }}
-        </ul>
-      </nav>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+              <a href="{{ path('series_add') }}" class="btn btn-success">
+                  Ajouter une nouvelle serie
+              </a>
+            {% endif %}
+        </div>
     </div>
 
-    <div class="d-flex justify-content-between my-4">
-      <a href="{{ path('app_home') }}" class="btn btn-primary">
-        Retour à l'accueil
-      </a>
-      {% if app.user and is_granted('ROLE_ADMIN') %}
-          <a href="{{ path('series_add') }}" class="btn btn-success">
-              Ajouter une nouvelle série
-          </a>
-      {% endif %}
-    </div>
-  </div>
+    {% include('vod/partials/footer.html.twig') %}
 
-  {% include('vod/partials/footer.html.twig') %}
 {% endblock %}
