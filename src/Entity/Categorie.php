@@ -24,12 +24,19 @@ class Categorie
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'Categorie')]
+    #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'categorie')]
     private Collection $films;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    #[ORM\ManyToMany(targetEntity: Serie::class, mappedBy: 'categorie')]
+    private Collection $series;
 
     public function __construct()
     {
         $this->films = new ArrayCollection();
+        $this->series = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,4 +87,44 @@ class Categorie
     {
         return $this->getLibelle() ?? '';
     }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Serie>
+     */
+    public function getSeries(): Collection
+    {
+        return $this->series;
+    }
+
+    public function addSeries(Serie $series): self
+    {
+        if (!$this->series->contains($series)) {
+            $this->series->add($series);
+            $series->addCategorie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeries(Serie $series): self
+    {
+        if ($this->series->removeElement($series)) {
+            $series->removeCategorie($this);
+        }
+
+        return $this;
+    }
+
 }

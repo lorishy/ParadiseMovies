@@ -19,14 +19,26 @@ class CategorieController extends AbstractController
     }
 
 
-    #[Route('/categorie', name: 'app_categorie')]
-    public function index(): Response
+    #[Route('/categorie', name: 'categorie_index')]
+    public function index(): Response   
     {
-        return $this->render('categorie/index.html.twig', [
-            'controller_name' => 'CategorieController',
+        $categories = $this->entityManager->getRepository(Categorie::class)->findAll();
+
+
+        return $this->render('vod/categories/index.html.twig', [
+            'categories' => $categories
         ]);
     }
 
+
+    #[Route('/categories/{libelle}', name: 'categories_show')]
+    public function show(Categorie $categorie): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        return $this->render('vod/categories/show.html.twig', [
+            'categorie' => $categorie,
+        ]);
+    }
 
     #[Route('/categorie/ajouter', name: 'categories_add')]
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
@@ -56,11 +68,51 @@ class CategorieController extends AbstractController
                 $this->addFlash('success', 'La catégorie a été ajouté avec succès.');
             }
 
-            // return $this->redirectToRoute('films_index');
+            // return $this->redirectToRoute('categories_index');
         }
 
         return $this->render('vod/categories/add.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/categorie/{libelle}/edit', name: 'categories_edit', methods: ['GET', 'PUT'])]
+    public function edit(Request $request, categorie $categorie): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $form = $this->createForm(categorieType::class, $categorie, [
+            // 'action' => $this->generateUrl('target_route'),
+            'method' => 'PUT',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            $libelle = $form->get('libelle')->getData();
+
+            if ($image) {
+                $fichier = strtolower(str_replace(array(' ', "'",":",";",",","\""), array('_', '_', '_', '_', '_', '_'), $libelle)) . '.' . $image->guessExtension();
+
+                $image->move(
+                    $this->getParameter('categories_images_directory'),
+                    $fichier
+                );
+                $categorie->setImage($fichier);
+
+            }
+
+            $this->entityManager->persist($categorie);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('categories_index');
+        }
+
+        return $this->render('vod/categories/edit.html.twig', [
+            'categorie' => $categorie,
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

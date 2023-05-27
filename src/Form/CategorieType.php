@@ -13,6 +13,12 @@ class CategorieType extends AbstractType
     {
         $builder
             ->add('libelle')
+            ->add('image', FileType::class, [
+                'label' => false,
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false
+            ])
         ;
     }
 
@@ -22,4 +28,5 @@ class CategorieType extends AbstractType
             'data_class' => Categorie::class,
         ]);
     }
+    
 }

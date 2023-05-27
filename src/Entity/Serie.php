@@ -40,11 +40,15 @@ class Serie
     #[ORM\ManyToMany(targetEntity: Acteur::class, inversedBy: 'Serie')]
     private Collection $casting;
 
+    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'series')]
+    private Collection $categorie;
+
     public function __construct()
     {
         $this->episodes = new ArrayCollection();
         $this->acteur = new ArrayCollection();
         $this->casting = new ArrayCollection();
+        $this->categorie = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,6 +159,30 @@ class Serie
     public function removeCasting(Acteur $casting): self
     {
         $this->casting->removeElement($casting);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Categorie>
+     */
+    public function getCategorie(): Collection
+    {
+        return $this->categorie;
+    }
+
+    public function addCategorie(Categorie $categorie): self
+    {
+        if (!$this->categorie->contains($categorie)) {
+            $this->categorie->add($categorie);
+        }
+
+        return $this;
+    }
+
+    public function removeCategorie(Categorie $categorie): self
+    {
+        $this->categorie->removeElement($categorie);
 
         return $this;
     }

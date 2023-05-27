@@ -66,6 +66,7 @@ class ActeurController extends AbstractController
     #[Route('/vod/acteurs/{prenom}_{nom}', name: 'acteurs_show')]
     public function show(Acteur $acteur): Response
     {
+        
         return $this->render('acteurs/show.html.twig', [
             'acteur' => $acteur,
         ]);
@@ -99,8 +100,19 @@ class ActeurController extends AbstractController
 
             }
 
-            $this->entityManager->persist($acteur);
-            $this->entityManager->flush();
+            $existingActeur = $this->entityManager->getRepository(Acteur::class)->findOneBy([
+                'nom' => $nom,
+                'prenom' => $prenom,
+            ]);
+    
+            if ($existingActeur) {
+                $this->addFlash('error', 'Le numéro d\'épisode existe déjà dans cette saison.');
+            } else {
+                $this->entityManager->persist($acteur);
+                $this->entityManager->flush();
+    
+                $this->addFlash('success', 'L\'épisode a été ajouté avec succès.');
+            }
 
             // return $this->redirectToRoute('acteurs_index');
         }
@@ -153,7 +165,7 @@ class ActeurController extends AbstractController
     public function delete(Request $request, Acteur $acteur, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        if ($this->isCsrfTokenValid('acteur_deletion' . $acteur->getNom(), $request->request->get('csrf_token')))
+        if ($this->isCsrfTokenValid('acteur_deletion' . $acteur->getId(), $request->request->get('csrf_token')))
         {
             $entityManager->remove($acteur);
             $entityManager->flush();

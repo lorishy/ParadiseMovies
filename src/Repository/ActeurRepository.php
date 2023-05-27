@@ -88,7 +88,7 @@ class ActeurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        $acteurs = $this->paginatorInterface->paginate($data, $searchData->page, 24);
+        $acteurs = $this->paginatorInterface->paginate($data, $searchData->page, 12);
 
         return $acteurs;
     }

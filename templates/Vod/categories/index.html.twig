@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Séries{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .ui-autocomplete {
+            position: absolute;
+            z-index: 1000;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        /* Fixe la largeur de l'input */
+        .input-group .form-control {
+            width: 300px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% include('vod/partials/header.html.twig') %}
+
+  <style>
+    .card.scale-up:hover {
+      transform: scale(1.05);
+    }
+
+    .transition {
+      transition: transform 0.3s;
+    }
+  </style>
+
+    <div class="container">
+        <h1 class="my-4">Séries disponibles</h1>
+    {% if categories is empty %}
+      <p>Aucune série disponible pour le moment.</p>
+    {% else %}
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for categorie in categories %}
+          <div class="col-md-2 mb-4">
+            <a href="{{ path('categories_show', {libelle: categorie.libelle}) }}?saison=1">
+              <div class="card h-100 scale-up transition">
+                <img src="{{ asset('uploads/categories_images/' ~ categorie.libelle|replace({' ': '_'}) ~ '/' ~ categorie.image) }}" class="card-img-top img-fluid" alt="{{ categorie.libelle }}">
+                <div class="card-body">
+                  <h5 class="card-title">{{ categorie.libelle }}</h5>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-between my-4">
+      <a href="{{ path('app_home') }}" class="btn btn-primary">
+        Retour à l'accueil
+      </a>
+      {% if app.user and is_granted('ROLE_ADMIN') %}
+          <a href="{{ path('categories_add') }}" class="btn btn-success">
+              Ajouter une nouvelle série
+          </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% include('vod/partials/footer.html.twig') %}
+{% endblock %}
