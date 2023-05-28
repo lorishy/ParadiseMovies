@@ -127,10 +127,8 @@
 										-
 										{{ episode.titre }}
 										-
-										{{ episode.description }}
-										-
 										{{ episode.duree|date('H:i:s') }}
-									</a>S
+									</a>
 								</li>
 							{% endfor %}
 							{% if currentSeason != '' %}
@@ -139,8 +137,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-
 		{% if app.user and is_granted('ROLE_ADMIN') %}
 			<div class="d-flex flex-column align-items-center justify-content-center mt-4">
 				<a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier serie</a>

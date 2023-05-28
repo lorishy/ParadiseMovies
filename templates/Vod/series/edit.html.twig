@@ -45,9 +45,9 @@
         <h2>Episodes</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for episode in serie.episodes %}
-            <div class="col-md-2 mb-4">
+            {# <div class="col-md-2 mb-4">
                 <p>{{ episode.titre }} - {{ episode.description }} - {{ episode.duree|date('H:i:s') }} - </p>
-            </div>                            
+            </div>                             #}
             {% endfor %}
         </div>
         <h2 class="card-title text-center">Ajouter un épisode</h2>
