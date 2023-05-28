@@ -217,15 +217,26 @@ class SerieController extends AbstractController
     
 
     
-    #[Route('/vod/series/{titre}/delete', name: 'series_delete', methods: ['DELETE'])]
+    #[Route('/vod/series/{id}/delete', name: 'series_delete', methods: ['DELETE'])]
     public function delete(Request $request, Serie $serie, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        if ($this->isCsrfTokenValid('serie_deletion' . $serie->getTitre(), $request->request->get('csrf_token')))
+        if ($this->isCsrfTokenValid('serie_deletion' . $serie->getId(), $request->request->get('csrf_token')))
         {
+            // Supprimer les épisodes associés à la série
+            $episodes = $serie->getEpisodes();
+            foreach ($episodes as $episode) {
+                $entityManager->remove($episode);
+            }
+    
+            // Supprimer la série elle-même
             $entityManager->remove($serie);
+    
+            // Exécuter les suppressions en cascade
             $entityManager->flush();
         }
+    
         return $this->redirectToRoute('series_index');
     }
+    
 }

@@ -1,29 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title user.firstname  %}
+{% block title user.firstname %}
 
 {% block body %}
     {% include('vod/partials/header.html.twig') %}
-  
-    <div class="container">
-        <div class="card my-5">
-            <div class="card-body">
-                <h1 class="card-title text-center">{{ user.lastname }} {{ user.firstname }}</h1>
-                {# <img src="{{ asset('/uploads/users_images/' ~ user.image) }}" class="img-thumbnail img-center" alt="Image du user"> #}
-                <p class="card-text">E mail : {{ user.email}}</p>
-                <p class="card-text">Adresse : {{ user.address }}</p>
-                <p class="card-text">Code postal : {{ user.zipcode }}</p>
-                <p class="card-text">Ville : {{ user.city }}</p>
-                {% if app.user and is_granted('ROLE_ADMIN') %}
+
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div class="col-12 col-md-6 card my-5">
+                <div class="card-body">
+                    <h1 class="card-title text-center">{{ user.lastname }} {{ user.firstname }}</h1>
+                    <img src="{{ asset('/uploads/users_images/' ~ user.image) }}" class="img-thumbnail img-center rounded-circle profile-image float-start" alt="Image du user">
+                    <p class="card-text">E mail : {{ user.email }}</p>
+                    <p class="card-text">Adresse : {{ user.address }}</p>
+                    <p class="card-text">Code postal : {{ user.zipcode }}</p>
+                    <p class="card-text">Ville : {{ user.city }}</p>
                     <div class="d-flex flex-column align-items-center justify-content-center mt-4">
-                        {# <a href="{{ path('users_edit', {id : user.id}) }}" class="btn btn-primary btn-block mb-2">Modifier Utilisateur</a> #}
-                        <form id="js-user-delete-form" action="{{ path('users_delete', {id : user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('user_deletion' ~ user.id) }}">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer Utilisateur</button>
-                        </form>
+                        <a href="{{ path('users_edit', {id : user.id}) }}" class="btn btn-primary btn-block mb-2">Modifier Utilisateur</a>
                     </div>
-                {% endif %}
+                    {% if app.user and is_granted('ROLE_ADMIN') %}
+                        <div class="d-flex flex-column align-items-center justify-content-center mt-4">
+                            {# <a href="{{ path('users_edit', {id : user.id}) }}" class="btn btn-primary btn-block mb-2">Modifier Utilisateur</a> #}
+                            <form id="js-user-delete-form" action="{{ path('users_delete', {id : user.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token('user_deletion' ~ user.id) }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer Utilisateur</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

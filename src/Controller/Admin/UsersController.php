@@ -17,8 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\RegistrationFormType;
+use App\Form\UserType;
 use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Security;
 
 class UsersController extends AbstractController
 {
@@ -68,7 +71,8 @@ class UsersController extends AbstractController
         SerieRepository $serieRepository,
         CategorieRepository $categorieRepository,
         UserRepository $userRepository
-    ): Response {
+    ): Response 
+    {
         $filmCount = $filmRepository->count([]);
         $acteurCount = $acteurRepository->count([]);
         $serieCount = $serieRepository->count([]);
@@ -85,12 +89,65 @@ class UsersController extends AbstractController
     }
 
     #[Route('/profil/{lastname}_{firstname}', name: 'users_show')]
-    public function show(User $user): Response
+    public function show(User $user, Security $security): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $currentUser = $security->getUser();
+    
+        if (!$currentUser || ($currentUser->getId() !== $user->getId() && !$security->isGranted('ROLE_ADMIN'))) {
+            throw new AccessDeniedException('Accès refusé.');
+        }
+        
+        return $this->render('users/show.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    
+
+    #[Route('/vod/users/{id}/edit', name: 'users_edit', methods: ['GET', 'PUT'])]
+    public function edit(Request $request, User $user, Security $security): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        return $this->render('users/show.html.twig', [
+        $currentUser = $security->getUser();
+    
+        if (!$currentUser || ($currentUser->getId() !== $user->getId() && !$security->isGranted('ROLE_ADMIN'))) {
+            throw new AccessDeniedException('Accès refusé.');
+        }
+
+        $form = $this->createForm(UserType::class, $user, [
+            // 'action' => $this->generateUrl('target_route'),
+            'method' => 'PUT',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            $lastname = $form->get('lastname')->getData();
+            $firstname = $form->get('firstname')->getData();
+
+            if ($image) {
+                $fichier = strtolower($firstname.'_'^$lastname) . '.' . $image->guessExtension();
+
+                $image->move(
+                    $this->getParameter('users_images_directory'),
+                    $fichier
+                );
+                $user->setImage($fichier);
+
+            }
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('users_show', ['lastname' => $lastname, 'firstname' => $firstname]);
+        }
+
+        return $this->render('users/edit.html.twig', [
             'user' => $user,
+            'form' => $form->createView(),
         ]);
     }
 

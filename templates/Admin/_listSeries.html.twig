@@ -25,8 +25,8 @@
                             {% endif %}
                         </td>
                         <td>
-                        <form id="js-serie-delete-form" action="{{ path('series_delete', {titre : serie.titre}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.titre) }}">
+                        <form id="js-serie-delete-form" action="{{ path('series_delete', {id : serie.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('serie_deletion' ~ serie.id) }}">
                             <input type="hidden" name="_method" value="DELETE">
                             <a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier</a>
                             <button type="submit" class="btn btn-danger btn-block mb-2">Supprimer</button>
