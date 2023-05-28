@@ -115,7 +115,7 @@ class SerieController extends AbstractController
             $titre = $form->get('titre')->getData();
 
             if ($image) {
-                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
+                $fichier = strtolower(str_replace(array(' ', "'",":",";",",","\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
 
                 //pour mettre dans un dossier au titre de la serie
                 // $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
@@ -134,7 +134,7 @@ class SerieController extends AbstractController
             $this->entityManager->persist($serie);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('series_index');
+            // return $this->redirectToRoute('series_index');
         }
 
 
@@ -159,7 +159,7 @@ class SerieController extends AbstractController
             $titre = $form->get('titre')->getData();
 
             if ($image) {
-                $fichier = strtolower(str_replace(array(' ', "'"), array('_', '_'), $titre)) . '.' . $image->guessExtension();
+                $fichier = strtolower(str_replace(array(' ', "'",":",";",",","\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
 
                 //pour mettre dans un dossier au titre de la serie
                 // $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
