@@ -19,7 +19,7 @@ class CategorieController extends AbstractController
     }
 
 
-    #[Route('/categorie', name: 'categorie_index')]
+    #[Route('/categories', name: 'categories_index')]
     public function index(): Response   
     {
         $categories = $this->entityManager->getRepository(Categorie::class)->findAll();
@@ -30,6 +30,18 @@ class CategorieController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/categories', name: 'categories_admin')]
+    public function admin(): Response   
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $categories = $this->entityManager->getRepository(Categorie::class)->findAll();
+
+
+        return $this->render('vod/categories/admin.html.twig', [
+            'categories' => $categories
+        ]);
+    }
 
     #[Route('/categories/{libelle}', name: 'categories_show')]
     public function show(Categorie $categorie): Response
@@ -113,6 +125,18 @@ class CategorieController extends AbstractController
             'categorie' => $categorie,
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/vod/series/categorie/{id}/delete', name: 'categories_delete', methods: ['GET', 'DELETE'])]
+    public function delete(Request $request, Categorie $categorie, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        if ($this->isCsrfTokenValid('categorie_deletion' . $categorie->getId(), $request->request->get('csrf_token')))
+        {
+            $entityManager->remove($categorie);
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('categories_index');
     }
 
 }

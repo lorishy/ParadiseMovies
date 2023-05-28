@@ -12,7 +12,8 @@
           <div class="card-body">
             <h5 class="card-title">Films</h5>
             <p class="card-text">{{ filmCount }}</p>
-            <a href="{{ path('films_add') }}" class="btn btn-secondary mt-3">ajouter film</a>
+            <a href="{{ path('films_add') }}" class="btn btn-secondary mt-3">Ajouter Film</a>
+            <a href="{{ path('films_admin') }}" class="btn btn-secondary mt-3">Administration Films</a>
           </div>
         </div>
       </div>
@@ -22,6 +23,7 @@
             <h5 class="card-title">Utilisateurs</h5>
             <p class="card-text">{{ userCount }}</p>
             <a href="{{ path('app_register') }}" class="btn btn-secondary mt-3">créer nouveau compte</a>
+            <a href="{{ path('users_admin') }}" class="btn btn-secondary mt-3">Administration Utilisateurs</a>
           </div>
         </div>
       </div>
@@ -32,7 +34,8 @@
           <div class="card-body">
             <h5 class="card-title">Séries</h5>
             <p class="card-text">{{ serieCount }}</p>
-            <a href="{{ path('series_add') }}" class="btn btn-secondary mt-3">ajouter serie</a>
+            <a href="{{ path('series_add') }}" class="btn btn-secondary mt-3">Ajouter Serie</a>
+            <a href="{{ path('series_admin') }}" class="btn btn-secondary mt-3">Administration Series</a>
           </div>
         </div>
       </div>
@@ -41,7 +44,8 @@
           <div class="card-body">
             <h5 class="card-title">Acteurs</h5>
             <p class="card-text">{{ acteurCount }}</p>
-            <a href="{{ path('acteurs_add') }}" class="btn btn-secondary mt-3">ajouter acteur</a>
+            <a href="{{ path('acteurs_add') }}" class="btn btn-secondary mt-3">Ajouter Acteur</a>
+            <a href="{{ path('acteurs_admin') }}" class="btn btn-secondary mt-3">Administration Acteur</a>
           </div>
         </div>
       </div>
@@ -52,7 +56,8 @@
           <div class="card-body">
             <h5 class="card-title">Catégories</h5>
             <p class="card-text">{{ categorieCount }}</p>
-            <a href="{{ path('categories_add') }}" class="btn btn-secondary mt-3">ajouter catégorie</a>
+            <a href="{{ path('categories_add') }}" class="btn btn-secondary mt-3">Ajouter Catégorie</a>
+            <a href="{{ path('categories_admin') }}" class="btn btn-secondary mt-3">Administration Catégories</a>
           </div>
         </div>
       </div>

@@ -80,7 +80,7 @@
         {% endif %}
         <h1 class="my-4">Séries</h1>
 
-        {# {% if categorie.series is empty %}
+        {% if categorie.series is empty %}
             <p>Aucune série disponible pour le moment.</p>
         {% else %}
             <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -90,7 +90,7 @@
                         <a href="{{ path('series_show', {titre: serie.titre}) }}?saison=1">
                             <div class="card h-100 scale-up transition">
                                 <div class="card-content">
-                    <img src="{{ asset('uploads/series_images/' ~ serie.titre|replace({' ': '_'}) ~ '/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
+                    <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img-top img-fluid" alt="{{ serie.titre }}">
                     <div class="card-body">
                       <h5 class="card-title">{{ serie.titre }}</h5>
                     </div>
@@ -99,7 +99,7 @@
               </div>
             {% endfor %}
           </div>
-        {% endif %} #}
+        {% endif %}
   </div>
 
   {% include('vod/partials/footer.html.twig') %}

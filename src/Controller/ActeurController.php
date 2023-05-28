@@ -23,17 +23,7 @@ class ActeurController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
-
-    // #[Route('/vod/acteurs', name: 'acteurs_index')]
-    // public function index(): Response
-    // {
-    //     $acteurs = $this->entityManager->getRepository(Acteur::class)->findAll();
-
-    //     return $this->render('acteurs/index.html.twig', [
-    //         'acteurs' => $acteurs,
-    //     ]);
-    // }
-
+    
     #[Route('/vod/acteurs', name: 'acteurs_index')]
     public function index( 
         ActeurRepository $acteurRepository, 
@@ -61,7 +51,18 @@ class ActeurController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/acteurs', name: 'acteurs_admin')]
+    public function admin(): Response   
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $acteurs = $this->entityManager->getRepository(Acteur::class)->findAll();
+
+
+        return $this->render('acteurs/admin.html.twig', [
+            'acteurs' => $acteurs
+        ]);
+    }
 
     #[Route('/vod/acteurs/{prenom}_{nom}', name: 'acteurs_show')]
     public function show(Acteur $acteur): Response

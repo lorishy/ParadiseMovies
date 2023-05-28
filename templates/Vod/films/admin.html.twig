@@ -1,0 +1,16 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration Utilisateurs{% endblock %}
+
+{% block body %}
+  {% include('vod/partials/header.html.twig') %}
+
+  <div class="container mb-4">
+    {% include('admin/_listFilms.html.twig') %}
+  </div>
+
+
+  {% include('vod/partials/footer.html.twig') %}
+{% endblock %}
+  

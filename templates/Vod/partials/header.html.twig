@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-info" >
   <div class="container-fluid">
     <a class="navbar-brand ml-auto" href="{{ path('app_home') }}">ParadiseMovies</a>
-    <a class="navbar-brand ml-auto" href="{{ path('app_vod') }}">VOD</a>
-    <a class="navbar-brand ml-auto" href="{{ path('app_cinema') }}">CINEMA</a>
+    {# <a class="navbar-brand ml-auto" href="{{ path('app_vod') }}">VOD</a>
+    <a class="navbar-brand ml-auto" href="{{ path('app_cinema') }}">CINEMA</a> #}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item bg-info" >
@@ -10,6 +10,12 @@
         </li>
         <li class="nav-item bg-info">
           <a class="nav-link" href="{{ path('series_index') }}">Séries</a>
+        </li>        
+        <li class="nav-item bg-info">
+          <a class="nav-link" href="{{ path('categories_index') }}">Catégories</a>
+        </li>        
+        <li class="nav-item bg-info">
+          <a class="nav-link" href="{{ path('acteurs_index') }}">Personalités</a>
         </li>
       </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

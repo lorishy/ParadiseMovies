@@ -46,6 +46,21 @@ class UsersController extends AbstractController
         return $this->render('admin/index.html.twig', compact('users', 'films', 'series', 'acteurs'));
     }
 
+
+    #[Route('/admin/users', name: 'users_admin')]
+    public function admin(): Response   
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $users = $this->entityManager->getRepository(User::class)->findAll();
+
+
+        return $this->render('users/admin.html.twig', [
+            'users' => $users
+        ]);
+    }
+    
+
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
     public function dashboard(
         FilmRepository $filmRepository,
@@ -74,7 +89,7 @@ class UsersController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        return $this->render('profil/show.html.twig', [
+        return $this->render('users/show.html.twig', [
             'user' => $user,
         ]);
     }

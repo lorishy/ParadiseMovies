@@ -62,7 +62,7 @@ class EpisodeController extends AbstractController
     public function delete(Request $request, Episode $episode, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        if ($this->isCsrfTokenValid('episode_deletion' . $episode->getTitre(), $request->request->get('csrf_token')))
+        if ($this->isCsrfTokenValid('episode_deletion' . $episode->getId(), $request->request->get('csrf_token')))
         {
             $entityManager->remove($episode);
             $entityManager->flush();

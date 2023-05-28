@@ -50,7 +50,20 @@ class FilmController extends AbstractController
         ]);
     }
 
+    
 
+    #[Route('/admin/films', name: 'films_admin')]
+    public function admin(): Response   
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $films = $this->entityManager->getRepository(Film::class)->findAll();
+
+
+        return $this->render('vod/films/admin.html.twig', [
+            'films' => $films
+        ]);
+    }
     
 
     #[Route('/vod/films/{titre}', name: 'films_show')]

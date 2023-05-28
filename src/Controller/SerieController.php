@@ -55,6 +55,20 @@ class SerieController extends AbstractController
         ]);
     }
 
+    
+    #[Route('/admin/series', name: 'series_admin')]
+    public function admin(): Response   
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $series = $this->entityManager->getRepository(Serie::class)->findAll();
+
+
+        return $this->render('vod/series/admin.html.twig', [
+            'series' => $series
+        ]);
+    }
+    
 
     #[Route('/vod/series/{titre}', name: 'series_show')]
     public function show(Request $request, Serie $serie): Response
