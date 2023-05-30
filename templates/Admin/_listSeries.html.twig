@@ -9,7 +9,8 @@
                     <th>ID</th>
                     <th>Titre</th>
                     <th>Description</th>
-                    <th>Action </th>
+                    <th>Catégories</th>
+                    <th>Actions </th>
                 </tr>
             </thead>
             <tbody>
@@ -23,6 +24,14 @@
                             {% else %}
                                 {{ serie.description }}
                             {% endif %}
+                        </td>
+                        <td>
+                            {% for categorie in serie.categorie %}
+                                <a href="{{path('categories_show' , {libelle : categorie.libelle})}}">
+                                    {{ categorie }}
+                                </a>
+                                {% if not loop.last %}, {% endif %}
+                            {% endfor %}
                         </td>
                         <td>
                         <form id="js-serie-delete-form" action="{{ path('series_delete', {id : serie.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr ?')">

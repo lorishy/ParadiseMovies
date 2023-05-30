@@ -30,13 +30,17 @@
                         <td>{{ film.duree|date('H:i:s') }}</td>
                         <td>
                             {% for casting in film.casting %}
-                                {{ casting}}
+                                <a href="{{path('acteurs_show' , {prenom : casting.prenom, nom : casting.nom})}}">
+                                    {{ casting}}
+                                </a>
                                 {% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </td>
                         <td>
                             {% for categorie in film.categorie %}
-                                {{ categorie }}
+                                <a href="{{path('categories_show' , {libelle : categorie.libelle})}}">
+                                    {{ categorie }}
+                                </a>
                                 {% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </td>
