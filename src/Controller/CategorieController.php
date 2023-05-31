@@ -46,7 +46,6 @@ class CategorieController extends AbstractController
     #[Route('/categories/{libelle}', name: 'categories_show')]
     public function show(Categorie $categorie): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
         return $this->render('vod/categories/show.html.twig', [
             'categorie' => $categorie,
         ]);

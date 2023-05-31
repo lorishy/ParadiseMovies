@@ -51,38 +51,52 @@
 
 	<div class="container">
 		<h1 class="my-4">Derniers films ajoutés</h1>
-		{% if films is empty %}
-			<p>Aucun film trouvé pour cette recherche.</p>
-		{% else %}
-			<div class="row row-cols-1 row-cols-md-3 g-4">
-				{% set sorted_films = films|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
-				{% for film in sorted_films %}
-					<div class="col-md-2 mb-4">
-						<a href="{{ path('films_show', {titre: film.titre}) }}">
-							<div class="card h-100 scale-up transition">
-								<div class="card-content">
-									<img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img" alt="{{ film.titre }}">
-									<div class="card-title">{{ film.titre }}
-										<br>
-										Avec
-										{% for casting in film.casting %}
-											{{ casting }}
-											{% if not loop.last and loop.index < 2 %},
-											{% endif %}
-										{% endfor %}
-										<br>
-										{{ film.duree|date('H:i:s') }}
-									</div>
-								</div>
-								{# <div class="card-body">
-								    <p class="card-text">{{ film.description }}</p>
-								</div> #}
-							</div>
-						</a>
-					</div>
-				{% endfor %}
-			</div>
-		{% endif %}
+		        {% if films is empty %}
+            <p>Aucun film trouvé pour cette recherche.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+								{% set sorted_films = films|sort((a, b) => a.createdAt < b.createdAt)|slice(0,6) %}
+                {% for film in sorted_films %}
+                    <div class="col-md-2 mb-4">
+                        <a href="{{ path('films_show', {titre: film.titre}) }}">
+                            <div class="card h-100 scale-up transition">              
+                                <div class="card-content">
+                                    <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img" alt="{{ film.titre }}">
+                                    <div class="card-title">{{ film.titre }}
+                                    <br>
+                                    {% set realisateurs = [] %}
+                                    {% set acteurs = [] %}
+                                    {% for acteur in film.casting %}
+                                    {% if acteur.metier == 'Réalisateur' %}
+                                            {% set realisateurs = realisateurs|merge([acteur]) %}
+                                        {% else %}
+                                            {% set acteurs = acteurs|merge([acteur]) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    De 
+                                    {% for realisateur in realisateurs %} 
+                                            {{ realisateur.prenom }} {{ realisateur.nom }}                                    
+                                        {% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                        <br>
+                                        Avec 
+                                    {% for acteur in acteurs %}
+                                            {{ acteur.prenom }} {{ acteur.nom }}
+                                        {% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    <br>
+                                    {{ film.duree|date('H:i:s') }}
+                                    </div>
+                                </div>
+                                {# <div class="card-body">
+                                    <p class="card-text">{{ film.description }}</p>
+                                </div> #}
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 		<h1 class="my-4">Dernieres Séries ajoutées</h1>
 
 

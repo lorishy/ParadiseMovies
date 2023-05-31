@@ -4,30 +4,33 @@
 
 {% block body %}
     {% include('vod/partials/header.html.twig') %}
-  
+
     <div class="container">
         <div class="card my-5">
             <div class="card-body">
-                <h1 class="card-title text-center">{{ acteur.prenom }} {{ acteur.nom }}</h1>
-                <p class="card-text">{{ acteur.metier }}</p>
-                <img src="{{ asset('/uploads/acteurs_images/' ~ acteur.image) }}" class="img-thumbnail" alt="Image de {{acteur.prenom}} {{acteur.nom}}">
-                <div>
-                    <h3>Apparaît dans :</h3>
-                    <ul>
-                        {% for film in acteur.films %}
-                        <div class="col-md-2 mb-4">
-                            <a href="{{ path('films_show', {titre: film.titre}) }}">
-                                <div class="card h-100 scale-up transition">
-                                    <div class="card-content">
-                                        <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img" alt="{{ film.titre }}">
-                                        <div class="card-title">{{ film.titre }}
+                <div class="row">
+                    <div class="col-md-4">
+                        <h1 class="card-title">{{ acteur.prenom }} {{ acteur.nom }}</h1>
+                        <p class="card-text">{{ acteur.metier }}</p>
+                        <img src="{{ asset('/uploads/acteurs_images/' ~ acteur.image) }}" class="img-thumbnail" alt="Image de {{acteur.prenom}} {{acteur.nom}}">
+                    </div>
+                    <div class="col-md-8">
+                        <h3>Apparaît dans :</h3>
+                        <div class="row">
+                            {% for film in acteur.films %}
+                                <div class="col-md-3 mb-4">
+                                    <a href="{{ path('films_show', {titre: film.titre}) }}">
+                                        <div class="card h-100 scale-up transition">
+                                            <div class="card-content">
+                                                <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img" alt="{{ film.titre }}">
+                                                <div class="card-title">{{ film.titre }}</div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
-                            </a>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </ul>
+                    </div>
                 </div>
                 {% if app.user and is_granted('ROLE_ADMIN') %}
                     <div class="d-flex flex-column align-items-center justify-content-center mt-4">

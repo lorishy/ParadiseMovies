@@ -37,7 +37,9 @@
 						<h1 class="card-title">{{ serie.titre }}</h1>
 						<p>
 							{% for categorie in serie.categorie %}
-								{{ categorie.libelle }}
+								<a href="{{ path('categories_show', {libelle : categorie.libelle} )}}">
+									{{ categorie.libelle }}
+								</a>
 								{% if not loop.last %},
 								{% endif %}
 							{% endfor %}
