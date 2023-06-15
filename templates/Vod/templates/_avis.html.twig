@@ -5,10 +5,13 @@
       <ul class="list-group">
         {% for avisItem in avis %}
           <li class="list-group-item">
-            <p>{{ avisItem.note }}/5
-              {{ avisItem.user.firstname }}
-              {{ avisItem.user.lastname }}</p>
-            <p>{{ avisItem.description }}</p>
+            <div class="d-flex align-items-start">
+              <img src="{{ asset('/uploads/users_images/' ~ avisItem.user.image) }}" class="rounded-circle me-3" alt="Photo de profil" style="width: 65px; height: 65px;">
+              <div>
+                <p>{{ avisItem.note }}/5 {{ avisItem.user.lastname }} {{ avisItem.user.firstname }}</p>
+                <p>{{ avisItem.description }}</p>
+              </div>
+            </div>
           </li>
         {% endfor %}
       </ul>

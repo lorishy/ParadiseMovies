@@ -129,7 +129,7 @@ class UsersController extends AbstractController
             $firstname = $form->get('firstname')->getData();
 
             if ($image) {
-                $fichier = strtolower($firstname.'_'^$lastname) . '.' . $image->guessExtension();
+                $fichier = strtolower($firstname.'_'.$lastname) . '.' . $image->guessExtension();
 
                 $image->move(
                     $this->getParameter('users_images_directory'),
