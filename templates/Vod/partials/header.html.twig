@@ -29,10 +29,16 @@
                         </li>
                     {% endif %}
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Me déconnecter</a>
+                    </li>                    
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ path('users_show', {firstname : app.user.firstname, lastname : app.user.lastname}) }}">Mon compte</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout') }}">Me déconnecter</a>
+
+                    <li class="nav-item"> 
+                      <a class="nav-link" href="{{ path('users_show', {firstname : app.user.firstname, lastname : app.user.lastname}) }}">
+                        <img src="{{ asset('/uploads/users_images/' ~ app.user.image) }}" class="img-thumbnail img-center rounded-circle profile-image float-start" alt="Image du user" style="width: 40px; height: 40px;">
+                      </a>
                     </li>
                 {% else %}
                     <li class="nav-item">

@@ -43,11 +43,15 @@ class Serie
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'series')]
     private Collection $categorie;
 
+    #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Avis::class)]
+    private Collection $avis;
+
     public function __construct()
     {
         $this->episodes = new ArrayCollection();
         $this->casting = new ArrayCollection();
         $this->categorie = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,6 +186,36 @@ class Serie
     public function removeCategorie(Categorie $categorie): self
     {
         $this->categorie->removeElement($categorie);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): self
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setSerie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): self
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getSerie() === $this) {
+                $avi->setSerie(null);
+            }
+        }
 
         return $this;
     }

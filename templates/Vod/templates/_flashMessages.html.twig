@@ -1,0 +1,6 @@
+{% for flashType, flashMessages in app.flashes %}
+    {% for flashMessage in flashMessages %}
+        {% set alertClass = flashType == 'success' ? 'alert-success' : 'alert-danger' %}
+        <div class="alert {{ alertClass }} text-center">{{ flashMessage }}</div>
+    {% endfor %}
+{% endfor %}

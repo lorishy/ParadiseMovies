@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Avis;
 use App\Repository\SerieRepository;
 use App\Entity\Serie;
 use App\Entity\Episode;
+use App\Form\AvisType;
 use App\Form\SerieType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Form\EpisodeType;
+use App\Repository\AvisRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,15 +29,14 @@ class SerieController extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
-    
+
 
     #[Route('/vod/series', name: 'series_index')]
-    public function index( 
-        serieRepository $serieRepository, 
+    public function index(
+        serieRepository $serieRepository,
         PaginatorInterface $paginatorInterface,
         Request $request
-    ): Response
-    {
+    ): Response {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
 
@@ -55,9 +57,9 @@ class SerieController extends AbstractController
         ]);
     }
 
-    
+
     #[Route('/admin/series', name: 'series_admin')]
-    public function admin(): Response   
+    public function admin(): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -68,10 +70,10 @@ class SerieController extends AbstractController
             'series' => $series
         ]);
     }
-    
+
 
     #[Route('/vod/series/{titre}', name: 'series_show')]
-    public function show(Request $request, Serie $serie): Response
+    public function show(Request $request, AvisRepository $avisRepository, Serie $serie): Response
     {
         $episodes = $serie->getEpisodes();
 
@@ -92,11 +94,37 @@ class SerieController extends AbstractController
             return $episode->getSaison() == $selectedSeason;
         });
 
+
+        // Récupérer les avis associés a la série
+        $avis = $avisRepository->findBy(['serie' => $serie]);
+
+        $user = $this->getUser();
+
+        $avie = new Avis();
+        $avie->setSerie($serie);
+        $avie->setUser($user);
+        $form = $this->createForm(AvisType::class, $avie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Enregistrer l'avis
+            $this->entityManager->persist($avie);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Votre avis a été ajouté avec succès.');
+
+            // Rediriger vers la page de la série
+            return $this->redirectToRoute('series_show', ['titre' => $serie->getTitre(),  'saison' => 1]);
+        }
+
+
         return $this->render('vod/series/show.html.twig', [
             'serie' => $serie,
             'saisons' => $saisons,
             'selectedSeason' => $selectedSeason,
             'episodes' => $episodes,
+            'formAvie' => $form->createView(),
+            'avis' => $avis,
         ]);
     }
 
@@ -106,7 +134,7 @@ class SerieController extends AbstractController
     public function add(Request $request, Filesystem $filesystem): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $serie = new Serie(); 
+        $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
         $form->handleRequest($request);
 
@@ -115,7 +143,7 @@ class SerieController extends AbstractController
             $titre = $form->get('titre')->getData();
 
             if ($image) {
-                $fichier = strtolower(str_replace(array(' ', "'",":",";",",","\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
+                $fichier = strtolower(str_replace(array(' ', "'", ":", ";", ",", "\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
 
                 //pour mettre dans un dossier au titre de la serie
                 // $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
@@ -129,7 +157,6 @@ class SerieController extends AbstractController
                     $fichier
                 );
                 $serie->setImage($fichier);
-
             }
             $this->entityManager->persist($serie);
             $this->entityManager->flush();
@@ -150,16 +177,16 @@ class SerieController extends AbstractController
         $form = $this->createForm(SerieType::class, $serie, [
             'method' => 'PUT',
         ]);
-    
+
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
-            
+
             $image = $form->get('image')->getData();
             $titre = $form->get('titre')->getData();
 
             if ($image) {
-                $fichier = strtolower(str_replace(array(' ', "'",":",";",",","\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
+                $fichier = strtolower(str_replace(array(' ', "'", ":", ";", ",", "\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
 
                 //pour mettre dans un dossier au titre de la serie
                 // $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
@@ -173,20 +200,19 @@ class SerieController extends AbstractController
                     $fichier
                 );
                 $serie->setImage($fichier);
-
             }
 
             $this->entityManager->persist($serie);
             $this->entityManager->flush();
-    
+
             return $this->redirectToRoute('series_index');
         }
-    
+
         $episode = new Episode();
         $episode->setSerie($serie);
         $formEpisode = $this->createForm(EpisodeType::class, $episode);
         $formEpisode->handleRequest($request);
-    
+
         if ($formEpisode->isSubmitted() && $formEpisode->isValid()) {
             // Vérifier si le numéro d'épisode existe déjà dans la saison
             $existingEpisode = $this->entityManager->getRepository(Episode::class)->findOneBy([
@@ -194,49 +220,46 @@ class SerieController extends AbstractController
                 'saison' => $episode->getSaison(),
                 'episode' => $episode->getEpisode(),
             ]);
-    
+
             if ($existingEpisode) {
                 $this->addFlash('error', 'Le numéro d\'épisode existe déjà dans cette saison.');
             } else {
                 $this->entityManager->persist($episode);
                 $this->entityManager->flush();
-    
+
                 $this->addFlash('success', 'L\'épisode a été ajouté avec succès.');
             }
-    
+
             return $this->redirectToRoute('series_edit', ['titre' => $serie->getTitre(), 'saison' => 1]);
         }
-    
+
         return $this->render('vod/series/edit.html.twig', [
             'serie' => $serie,
             'form' => $form->createView(),
             'formEpisode' => $formEpisode->createView(),
         ]);
-    
     }
-    
 
-    
+
+
     #[Route('/vod/series/{id}/delete', name: 'series_delete', methods: ['DELETE'])]
     public function delete(Request $request, Serie $serie, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        if ($this->isCsrfTokenValid('serie_deletion' . $serie->getId(), $request->request->get('csrf_token')))
-        {
+        if ($this->isCsrfTokenValid('serie_deletion' . $serie->getId(), $request->request->get('csrf_token'))) {
             // Supprimer les épisodes associés à la série
             $episodes = $serie->getEpisodes();
             foreach ($episodes as $episode) {
                 $entityManager->remove($episode);
             }
-    
+
             // Supprimer la série elle-même
             $entityManager->remove($serie);
-    
+
             // Exécuter les suppressions en cascade
             $entityManager->flush();
         }
-    
+
         return $this->redirectToRoute('series_index');
     }
-    
 }

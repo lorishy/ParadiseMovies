@@ -23,7 +23,7 @@
 
 {% block body %}
 	{% include('vod/partials/header.html.twig') %}
-
+	{% include('vod/templates/_flashMessages.html.twig') %}
 	<div class="background-image"></div>
 
 	<div class="container">
@@ -78,67 +78,67 @@
 						</p>
 						<p class="card-text">{{ serie.description }}</p>
 
-            {# SAISONS EPISODES #}
-							{% set saisons = [] %}
-							{% for episode in serie.episodes %}
-								{% if episode.saison not in saisons %}
-									{% set saisons = saisons|merge([episode.saison]) %}
-								{% endif %}
-							{% endfor %}
-
-							{% set saisons = saisons|sort %}
-
-							<form action="{{ path('series_show', {titre : serie.titre}) }}" method="get">
-								<label for="season-select">Saison :</label>
-								<select id="season-select" name="saison" onchange="this.form.submit()">
-									<option value="1" {% if selectedSeason == 1 %} selected {% endif %}>Saison 1</option>
-									{% for season in saisons %}
-										{% if season != 1 %}
-											<option value="{{ season }}" {% if selectedSeason == season %} selected {% endif %}>Saison
-												{{ season }}</option>
-										{% endif %}
-									{% endfor %}
-								</select>
-								<noscript><input type="submit" value="Go"></noscript>
-							</form>
-
-							{% if selectedSeason is empty %}
-								{% set selectedEpisodes = serie.episodes %}
-							{% else %}
-								{% set selectedEpisodes = serie.episodes|filter(e => e.saison == selectedSeason) %}
+						{# SAISONS EPISODES #}
+						{% set saisons = [] %}
+						{% for episode in serie.episodes %}
+							{% if episode.saison not in saisons %}
+								{% set saisons = saisons|merge([episode.saison]) %}
 							{% endif %}
+						{% endfor %}
 
-							{% set sortedEpisodes = selectedEpisodes|sort((a, b) => a.episode - b.episode) %}
+						{% set saisons = saisons|sort %}
 
-							{% set currentSeason = '' %}
-							{% for episode in sortedEpisodes %}
-								{% if episode.saison != currentSeason %}
-									{% if currentSeason != '' %}
-									</ul>
-								{% endif %}
-								<h2>Saison 
-                
-									{{ episode.saison }}</h2>
-								<ul>
-              
-									{% set currentSeason = episode.saison %}
-								{% endif %}
-								<li>
-									<a href="{{ path('episodes_show', {id : episode.id, serie_titre : serie.titre, titre : serie.titre} )}}">
-										{{ episode.episode }}
-										-
-										{{ episode.titre }}
-										-
-										{{ episode.duree|date('H:i:s') }}
-									</a>
-								</li>
-							{% endfor %}
-							{% if currentSeason != '' %}
-							</ul>
+						<form action="{{ path('series_show', {titre : serie.titre}) }}" method="get">
+							<label for="season-select">Saison :</label>
+							<select id="season-select" name="saison" onchange="this.form.submit()">
+								<option value="1" {% if selectedSeason == 1 %} selected {% endif %}>Saison 1</option>
+								{% for season in saisons %}
+									{% if season != 1 %}
+										<option value="{{ season }}" {% if selectedSeason == season %} selected {% endif %}>Saison
+											{{ season }}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
+							<noscript><input type="submit" value="Go"></noscript>
+						</form>
+
+						{% if selectedSeason is empty %}
+							{% set selectedEpisodes = serie.episodes %}
+						{% else %}
+							{% set selectedEpisodes = serie.episodes|filter(e => e.saison == selectedSeason) %}
 						{% endif %}
-					</div>
+
+						{% set sortedEpisodes = selectedEpisodes|sort((a, b) => a.episode - b.episode) %}
+
+						{% set currentSeason = '' %}
+						{% for episode in sortedEpisodes %}
+							{% if episode.saison != currentSeason %}
+								{% if currentSeason != '' %}
+								</ul>
+							{% endif %}
+							<h2>Saison
+
+								{{ episode.saison }}</h2>
+							<ul>
+
+								{% set currentSeason = episode.saison %}
+							{% endif %}
+							<li>
+								<a href="{{ path('episodes_show', {id : episode.id, serie_titre : serie.titre, titre : serie.titre} )}}">
+									{{ episode.episode }}
+									-
+									{{ episode.titre }}
+									-
+									{{ episode.duree|date('H:i:s') }}
+								</a>
+							</li>
+						{% endfor %}
+						{% if currentSeason != '' %}
+						</ul>
+					{% endif %}
 				</div>
 			</div>
+		</div>
 		{% if app.user and is_granted('ROLE_ADMIN') %}
 			<div class="d-flex flex-column align-items-center justify-content-center mt-4">
 				<a href="{{ path('series_edit', {titre : serie.titre}) }}" class="btn btn-primary btn-block mb-2">Modifier serie</a>
@@ -150,4 +150,6 @@
 			</div>
 		{% endif %}
 	</div>
+	{% include('vod/templates/_avis.html.twig') %}
 </div></div>{% include('vod/partials/footer.html.twig') %}{% endblock %}
+

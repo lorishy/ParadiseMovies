@@ -21,8 +21,18 @@ class Avis
     #[ORM\Column]
     private ?float $note = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 1000)]
     private ?string $description = null;
+
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?Film $film = null;
+
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?Serie $serie = null;
 
     public function getId(): ?int
     {
@@ -49,6 +59,42 @@ class Avis
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getFilm(): ?Film
+    {
+        return $this->film;
+    }
+
+    public function setFilm(?Film $film): self
+    {
+        $this->film = $film;
+
+        return $this;
+    }
+
+    public function getSerie(): ?Serie
+    {
+        return $this->serie;
+    }
+
+    public function setSerie(?Serie $serie): self
+    {
+        $this->serie = $serie;
 
         return $this;
     }

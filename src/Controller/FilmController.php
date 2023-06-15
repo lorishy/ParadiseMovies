@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Avis;
 use App\Repository\FilmRepository;
 use App\Entity\Film;
+use App\Form\AvisType;
 use App\Form\FilmType;
 use App\Form\SearchType;
 use App\Model\SearchData;
+use App\Repository\AvisRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,14 +70,39 @@ class FilmController extends AbstractController
     
 
     #[Route('/vod/films/{titre}', name: 'films_show')]
-    public function show(Film $film): Response
+    public function show(Film $film, AvisRepository $avisRepository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
+        
+        // Récupérer les avis associés au film
+        $avis = $avisRepository->findBy(['film' => $film]);
+
+        $user = $this->getUser();
+    
+        $avie = new Avis();
+        $avie->setFilm($film);
+        $avie->setUser($user);
+        $form = $this->createForm(AvisType::class, $avie);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Enregistrer l'avis
+            $this->entityManager->persist($avie);
+            $this->entityManager->flush();
+    
+            $this->addFlash('success', 'Votre avis a été ajouté avec succès.');
+    
+            // Rediriger vers la page du film
+            return $this->redirectToRoute('films_show', ['titre' => $film->getTitre()]);
+        }
+    
+        
         return $this->render('vod/films/show.html.twig', [
             'film' => $film,
+            'avis' => $avis,
+            'formAvie' => $form->createView(),
         ]);
     }
-
 
     #[Route('/vod/films-add', name: 'films_add', methods: ['GET', 'POST'])]
     public function add(Request $request): Response
