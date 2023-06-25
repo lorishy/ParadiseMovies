@@ -96,9 +96,19 @@ class FilmController extends AbstractController
             return $this->redirectToRoute('films_show', ['titre' => $film->getTitre()]);
         }
     
+        $fav = 0;
         
+        if ($film->getUsersFavs() == $user)
+        {
+            $fav = 1;
+        }
+        else {
+            $fav = 0;
+        }
+
         return $this->render('vod/films/show.html.twig', [
             'film' => $film,
+            'fav' => $fav,
             'avis' => $avis,
             'formAvie' => $form->createView(),
         ]);

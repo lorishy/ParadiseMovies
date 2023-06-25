@@ -48,11 +48,15 @@ class Film
     #[ORM\OneToMany(mappedBy: 'film', targetEntity: Avis::class)]
     private Collection $avis;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favs_films')]
+    private Collection $users_favs;
+
     public function __construct()
     {
         $this->casting = new ArrayCollection();
         $this->categorie = new ArrayCollection();
         $this->avis = new ArrayCollection();
+        $this->users_favs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -210,6 +214,33 @@ class Film
             if ($avi->getFilm() === $this) {
                 $avi->setFilm(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersFavs(): Collection
+    {
+        return $this->users_favs;
+    }
+
+    public function addUsersFav(User $usersFav): self
+    {
+        if (!$this->users_favs->contains($usersFav)) {
+            $this->users_favs->add($usersFav);
+            $usersFav->addFavsFilm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersFav(User $usersFav): self
+    {
+        if ($this->users_favs->removeElement($usersFav)) {
+            $usersFav->removeFavsFilm($this);
         }
 
         return $this;

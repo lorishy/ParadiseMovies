@@ -52,9 +52,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Avis::class)]
     private Collection $avis;
 
+    #[ORM\ManyToMany(targetEntity: Film::class, inversedBy: 'users_favs')]
+    private Collection $favs_films;
+
+    #[ORM\ManyToMany(targetEntity: Serie::class, inversedBy: 'users_favs')]
+    private Collection $favs_series;
+
     public function __construct()
     {
         $this->avis = new ArrayCollection();
+        $this->favs_films = new ArrayCollection();
+        $this->favs_series = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -225,6 +233,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $avi->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, film>
+     */
+    public function getFavsFilms(): Collection
+    {
+        return $this->favs_films;
+    }
+
+    public function addFavsFilm(film $favsFilm): self
+    {
+        if (!$this->favs_films->contains($favsFilm)) {
+            $this->favs_films->add($favsFilm);
+        }
+
+        return $this;
+    }
+
+    public function removeFavsFilm(film $favsFilm): self
+    {
+        $this->favs_films->removeElement($favsFilm);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, serie>
+     */
+    public function getFavsSeries(): Collection
+    {
+        return $this->favs_series;
+    }
+
+    public function addFavsSeries(serie $favsSeries): self
+    {
+        if (!$this->favs_series->contains($favsSeries)) {
+            $this->favs_series->add($favsSeries);
+        }
+
+        return $this;
+    }
+
+    public function removeFavsSeries(serie $favsSeries): self
+    {
+        $this->favs_series->removeElement($favsSeries);
 
         return $this;
     }

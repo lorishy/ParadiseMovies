@@ -44,7 +44,7 @@ class SerieRepository extends ServiceEntityRepository
         }
     }
 
-        /**
+    /**
      * Get published series
      *
      * @param int $page
@@ -65,7 +65,7 @@ class SerieRepository extends ServiceEntityRepository
             $data = $data
                 ->join('f.categories', 'c')
                 ->andWhere(':categorie IN (c)')
-                ->setParameter('category', $categorie);
+                ->setParameter('categorie', $categorie);
         }
 
         $data->getQuery()

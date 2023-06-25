@@ -34,7 +34,7 @@
 						<img src="{{ asset('/uploads/films_images/' ~ film.image) }}" class="img-thumbnail" alt="Image de {{ film.titre }}">
 					</div>
 					<div class="col-md-8">
-						<h1 class="card-title">{{ film.titre }}</h1>
+						<h1 class="card-title">{{ film.titre }} {{fav}}</h1>
 						<p>
 							{% for categorie in film.categorie %}
 								<a href="{{ path('categories_show', {libelle : categorie.libelle} )}}">
