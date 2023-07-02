@@ -71,6 +71,36 @@ class SerieController extends AbstractController
         ]);
     }
 
+    #[Route('/favorisSeries/add/{id}', name: 'favorisSeries_add')]
+    public function favorisAdd($id): Response
+    {
+        $serie = $this->entityManager->getRepository(Serie::class)->find($id);
+        $user = $this->getUser();
+        
+        if (!$user->getFavsSeries()->contains($serie)) {
+            $user->addFavsSeries($serie);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        return $this->redirectToRoute('series_show', ['titre' => $serie->getTitre()]);
+    }
+
+    #[Route('/favorisSeries/remove/{id}', name: 'favorisSeries_remove')]
+    public function favorisRemove($id): Response
+    {
+        $serie = $this->entityManager->getRepository(Serie::class)->find($id);
+        $user = $this->getUser();
+
+        if ($user->getFavsSeries()->contains($serie)) {
+            $user->removeFavsSeries($serie);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        return $this->redirectToRoute('series_show', ['titre' => $serie->getTitre()]);
+    }
+
 
     #[Route('/vod/series/{titre}', name: 'series_show')]
     public function show(Request $request, AvisRepository $avisRepository, Serie $serie): Response
@@ -108,6 +138,7 @@ class SerieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Enregistrer l'avis
+            $serie->addAvi($avie);
             $this->entityManager->persist($avie);
             $this->entityManager->flush();
 
@@ -117,6 +148,7 @@ class SerieController extends AbstractController
             return $this->redirectToRoute('series_show', ['titre' => $serie->getTitre(),  'saison' => 1]);
         }
 
+        $fav = $serie->getUsersFavs()->contains($user) ? 1 : 0;
 
         return $this->render('vod/series/show.html.twig', [
             'serie' => $serie,
@@ -125,6 +157,7 @@ class SerieController extends AbstractController
             'episodes' => $episodes,
             'formAvie' => $form->createView(),
             'avis' => $avis,
+            'fav' => $fav,
         ]);
     }
 
@@ -144,12 +177,6 @@ class SerieController extends AbstractController
 
             if ($image) {
                 $fichier = strtolower(str_replace(array(' ', "'", ":", ";", ",", "\""), array('_', '_', '_', '_', '_', '_'), $titre)) . '.' . $image->guessExtension();
-
-                //pour mettre dans un dossier au titre de la serie
-                // $directory = $this->getParameter('series_images_directory') . '/' . str_replace(' ', '_', $serie->getTitre());
-
-                // $filesystem->mkdir($directory); // Crée le dossier correspondant à la série
-
                 $image->move(
                     //pour mettre dans un dossier au titre de la serie
                     // $directory,  
@@ -160,8 +187,6 @@ class SerieController extends AbstractController
             }
             $this->entityManager->persist($serie);
             $this->entityManager->flush();
-
-            // return $this->redirectToRoute('series_index');
         }
 
 

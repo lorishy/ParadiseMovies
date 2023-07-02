@@ -28,8 +28,49 @@
                             </form>
                         </div>
                     {% endif %}
-                </div>
+                </div>               
             </div>
+        <h1 class="my-4">Films préférés</h1>
+		{% if user.favsFilms is empty %}
+            <p>Aucun film trouvé pour cette recherche.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for film in user.favsFilms %}
+                    <div class="col-md-2 mb-4">
+                        <a href="{{ path('films_show', {titre: film.titre}) }}">
+                            <div class="card h-100 scale-up transition">              
+                                <div class="card-content">
+                                    <img src="{{ asset('uploads/films_images/' ~ film.image) }}" class="card-img" alt="{{ film.titre }}">
+                                    <div class="card-title">{{ film.titre }}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}  
+        
+        <h1 class="my-4">Séries préférées</h1>
+		{% if user.favsSeries is empty %}
+            <p>Aucun film trouvé pour cette recherche.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for serie in user.favsSeries %}
+                    <div class="col-md-2 mb-4">
+                        <a href="{{ path('series_show', {titre: serie.titre}) }}">
+                            <div class="card h-100 scale-up transition">              
+                                <div class="card-content">
+                                    <img src="{{ asset('uploads/series_images/' ~ serie.image) }}" class="card-img" alt="{{ serie.titre }}">
+                                    <div class="card-title">{{ serie.titre }}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         </div>
     </div>
 

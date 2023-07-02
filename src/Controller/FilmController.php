@@ -67,7 +67,36 @@ class FilmController extends AbstractController
             'films' => $films
         ]);
     }
-    
+
+    #[Route('/favorisFilms/add/{id}', name: 'favorisFilms_add')]
+    public function favorisAdd($id): Response
+    {
+        $film = $this->entityManager->getRepository(Film::class)->find($id);
+        $user = $this->getUser();
+        
+        if (!$user->getFavsFilms()->contains($film)) {
+            $user->addFavsFilm($film);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        return $this->redirectToRoute('films_show', ['titre' => $film->getTitre()]);
+    }
+
+    #[Route('/favorisFilms/remove/{id}', name: 'favorisFilms_remove')]
+    public function favorisRemove($id): Response
+    {
+        $film = $this->entityManager->getRepository(Film::class)->find($id);
+        $user = $this->getUser();
+
+        if ($user->getFavsFilms()->contains($film)) {
+            $user->removeFavsFilm($film);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        return $this->redirectToRoute('films_show', ['titre' => $film->getTitre()]);
+    }
 
     #[Route('/vod/films/{titre}', name: 'films_show')]
     public function show(Film $film, AvisRepository $avisRepository, Request $request): Response
@@ -84,27 +113,18 @@ class FilmController extends AbstractController
         $avie->setUser($user);
         $form = $this->createForm(AvisType::class, $avie);
         $form->handleRequest($request);
-    
+        
         if ($form->isSubmitted() && $form->isValid()) {
             // Enregistrer l'avis
+            $film->addAvi($avie);
             $this->entityManager->persist($avie);
             $this->entityManager->flush();
-    
             $this->addFlash('success', 'Votre avis a été ajouté avec succès.');
     
-            // Rediriger vers la page du film
             return $this->redirectToRoute('films_show', ['titre' => $film->getTitre()]);
         }
-    
-        $fav = 0;
-        
-        if ($film->getUsersFavs() == $user)
-        {
-            $fav = 1;
-        }
-        else {
-            $fav = 0;
-        }
+  
+        $fav = $film->getUsersFavs()->contains($user) ? 1 : 0;
 
         return $this->render('vod/films/show.html.twig', [
             'film' => $film,

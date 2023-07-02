@@ -46,8 +46,11 @@ class Serie
     #[ORM\OneToMany(mappedBy: 'serie', targetEntity: Avis::class)]
     private Collection $avis;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favs_series')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favsSeries')]
     private Collection $users_favs;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $note = null;
 
     public function __construct()
     {
@@ -202,23 +205,35 @@ class Serie
         return $this->avis;
     }
 
+    /**
+     * Ajouter un avis associé a la série.
+     *
+     * @param Avis $avi
+     * @return self
+     */
     public function addAvi(Avis $avi): self
     {
         if (!$this->avis->contains($avi)) {
             $this->avis->add($avi);
             $avi->setSerie($this);
+            $this->updateNote(); // Mettre à jour la note du film
         }
 
         return $this;
     }
 
+
+    /**
+     * Supprimer un avis associé a la série.
+     *
+     * @param Avis $avi
+     * @return self
+     */
     public function removeAvi(Avis $avi): self
     {
         if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
-            if ($avi->getSerie() === $this) {
-                $avi->setSerie(null);
-            }
+            $avi->setSerie(null);
+            $this->updateNote(); // Mettre à jour la note de la série
         }
 
         return $this;
@@ -251,6 +266,37 @@ class Serie
         return $this;
     }
 
+    public function getNote(): ?float
+    {
+        return $this->note;
+    }
+
+    public function setNote(?float $note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Recalculer la note du film en fonction des avis associés.
+     */
+    public function updateNote(): void
+    {
+        $avis = $this->getAvis();
+        $totalNotes = 0;
+        $count = count($avis);
+
+        if ($count > 0) {
+            foreach ($avis as $avi) {
+                $totalNotes += $avi->getNote();
+            }
+
+            $this->setNote($totalNotes / $count);
+        } else {
+            $this->setNote(0);
+        }
+    }
 }
 
 

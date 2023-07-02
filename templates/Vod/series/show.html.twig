@@ -34,7 +34,16 @@
 						<img src="{{ asset('/uploads/series_images/' ~ serie.image) }}" class="img-thumbnail" alt="Image de {{ serie.titre }}">
 					</div>
 					<div class="col-md-8">
-						<h1 class="card-title">{{ serie.titre }}</h1>
+						<div class="d-flex align-items-center justify-content-between">
+							<h1 class="card-title">{{ serie.titre }}</h1>
+							{% if app.user and is_granted('ROLE_USER') %}
+									{% if fav == 0 %}
+											<a href="{{ path('favorisSeries_add', {id: serie.id}) }}" class="btn btn-success">Mettre en favori</a>
+									{% else %}
+											<a href="{{ path('favorisSeries_remove', {id: serie.id}) }}" class="btn btn-primary">Enlever des favoris</a>
+									{% endif %}
+							{% endif %}
+						</div>
 						<p>
 							{% for categorie in serie.categorie %}
 								<a href="{{ path('categories_show', {libelle : categorie.libelle} )}}">
@@ -46,7 +55,12 @@
 						</p>
 						<p>Sortie le
 							{{ serie.sortie|date('d/m/Y') }}</p>
-						<p>
+						<p>						
+						{% if serie.note == 0 %}
+            	<p>(Pas assez d'avis pour avoir une note)</p>
+        		{% else %}
+							<p>	Note : {{ serie.note|round(1, 'floor')}} / 5</p>
+						{% endif %}
 							{% set realisateurs = [] %}
 							{% set acteurs = [] %}
 							{% for acteur in serie.casting %}

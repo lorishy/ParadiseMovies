@@ -53,16 +53,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $avis;
 
     #[ORM\ManyToMany(targetEntity: Film::class, inversedBy: 'users_favs')]
-    private Collection $favs_films;
+    private Collection $favsFilms;
 
     #[ORM\ManyToMany(targetEntity: Serie::class, inversedBy: 'users_favs')]
-    private Collection $favs_series;
+    private Collection $favsSeries;
 
     public function __construct()
     {
         $this->avis = new ArrayCollection();
-        $this->favs_films = new ArrayCollection();
-        $this->favs_series = new ArrayCollection();
+        $this->favsFilms = new ArrayCollection();
+        $this->favsSeries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -242,13 +242,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getFavsFilms(): Collection
     {
-        return $this->favs_films;
+        return $this->favsFilms;
     }
 
     public function addFavsFilm(film $favsFilm): self
     {
-        if (!$this->favs_films->contains($favsFilm)) {
-            $this->favs_films->add($favsFilm);
+        if (!$this->favsFilms->contains($favsFilm)) {
+            $this->favsFilms->add($favsFilm);
         }
 
         return $this;
@@ -256,7 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeFavsFilm(film $favsFilm): self
     {
-        $this->favs_films->removeElement($favsFilm);
+        $this->favsFilms->removeElement($favsFilm);
 
         return $this;
     }
@@ -266,13 +266,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getFavsSeries(): Collection
     {
-        return $this->favs_series;
+        return $this->favsSeries;
     }
 
     public function addFavsSeries(serie $favsSeries): self
     {
-        if (!$this->favs_series->contains($favsSeries)) {
-            $this->favs_series->add($favsSeries);
+        if (!$this->favsSeries->contains($favsSeries)) {
+            $this->favsSeries->add($favsSeries);
         }
 
         return $this;
@@ -280,7 +280,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeFavsSeries(serie $favsSeries): self
     {
-        $this->favs_series->removeElement($favsSeries);
+        $this->favsSeries->removeElement($favsSeries);
 
         return $this;
     }

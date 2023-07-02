@@ -48,15 +48,18 @@ class Film
     #[ORM\OneToMany(mappedBy: 'film', targetEntity: Avis::class)]
     private Collection $avis;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favs_films')]
-    private Collection $users_favs;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favsFilms')]
+    private Collection $usersFavs;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $note = null;
 
     public function __construct()
     {
         $this->casting = new ArrayCollection();
         $this->categorie = new ArrayCollection();
         $this->avis = new ArrayCollection();
-        $this->users_favs = new ArrayCollection();
+        $this->usersFavs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -197,23 +200,34 @@ class Film
         return $this->avis;
     }
 
+    /**
+     * Ajouter un avis associé au film.
+     *
+     * @param Avis $avi
+     * @return self
+     */
     public function addAvi(Avis $avi): self
     {
         if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
+            $this->avis[] = $avi;
             $avi->setFilm($this);
+            $this->updateNote(); // Mettre à jour la note du film
         }
 
         return $this;
     }
 
+    /**
+     * Supprimer un avis associé au film.
+     *
+     * @param Avis $avi
+     * @return self
+     */
     public function removeAvi(Avis $avi): self
     {
         if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
-            if ($avi->getFilm() === $this) {
-                $avi->setFilm(null);
-            }
+            $avi->setFilm(null);
+            $this->updateNote(); // Mettre à jour la note du film
         }
 
         return $this;
@@ -224,13 +238,13 @@ class Film
      */
     public function getUsersFavs(): Collection
     {
-        return $this->users_favs;
+        return $this->usersFavs;
     }
 
     public function addUsersFav(User $usersFav): self
     {
-        if (!$this->users_favs->contains($usersFav)) {
-            $this->users_favs->add($usersFav);
+        if (!$this->usersFavs->contains($usersFav)) {
+            $this->usersFavs->add($usersFav);
             $usersFav->addFavsFilm($this);
         }
 
@@ -239,10 +253,42 @@ class Film
 
     public function removeUsersFav(User $usersFav): self
     {
-        if ($this->users_favs->removeElement($usersFav)) {
+        if ($this->usersFavs->removeElement($usersFav)) {
             $usersFav->removeFavsFilm($this);
         }
 
         return $this;
+    }
+
+    public function getNote(): ?float
+    {
+        return $this->note;
+    }
+
+    public function setNote(?float $note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+    
+    /**
+     * Recalculer la note du film en fonction des avis associés.
+     */
+    public function updateNote(): void
+    {
+        $avis = $this->getAvis();
+        $totalNotes = 0;
+        $count = count($avis);
+
+        if ($count > 0) {
+            foreach ($avis as $avi) {
+                $totalNotes += $avi->getNote();
+            }
+
+            $this->setNote($totalNotes / $count);
+        } else {
+            $this->setNote(0);
+        }
     }
 }
